@@ -1,10 +1,12 @@
 from django.db import models
+from users.models import User
 
 
 class Request(models.Model):
     created_at = models.DateField(auto_now_add = True)
-    #client
-    #employee
+    client = models.ForeignKey(User, related_name='user', null=True, on_delete=models.SET_NULL)
+    employee = models.ForeignKey(User, related_name='employee', null=True, on_delete=models.SET_NULL)
+    product = models.CharField(blank=True, max_length=200)
 
     CONSULTING = 'CNSL'
     DIAGNOSIS = 'DGNS'
