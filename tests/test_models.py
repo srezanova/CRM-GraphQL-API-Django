@@ -38,7 +38,7 @@ class UserModelTest(TestCase):
         self.assertEqual(self.client.last_name, 'Smith')
         self.assertEqual(self.client.phone, '+7(916)000-00-00')
         self.assertFalse(self.client.is_superuser)
-        self.assertFalse(self.client.staff)
+        self.assertFalse(self.client.is_staff)
 
     def test_staff_detail(self):
         self.assertEqual(self.staff.email, 'staff@test.com')
@@ -47,7 +47,7 @@ class UserModelTest(TestCase):
         self.assertEqual(self.staff.last_name, 'Richard')
         self.assertEqual(self.staff.phone, '+7(916)000-00-01')
         self.assertFalse(self.staff.is_superuser)
-        self.assertTrue(self.staff.staff)
+        self.assertTrue(self.staff.is_staff)
 
     def test_superuser_detail(self):
         self.assertEqual(self.superuser.email, 'superuser@test.com')
@@ -56,7 +56,7 @@ class UserModelTest(TestCase):
         self.assertEqual(self.superuser.last_name, 'Bold')
         self.assertEqual(self.superuser.phone, '+7(916)000-00-02')
         self.assertTrue(self.superuser.is_superuser)
-        self.assertTrue(self.superuser.staff)
+        self.assertTrue(self.superuser.is_staff)
 
     def test_user_no_email(self):
         with self.assertRaises(ValueError):

@@ -45,6 +45,32 @@ class UpdateUser(graphene.Mutation):
             user_instance.save()
             return UpdateUser(user=user_instance)
 
+class MakeUserStaff(graphene.Mutation):
+    '''
+    Superuser can give staff rights to employees.
+    '''
+    user = graphene.Field(UserType)
+
+    class Arguments:
+        user_id = graphene.ID(required=True)
+        is_staff = graphene.Boolean(required=True)
+
+    def mutate(self, info, user_id, is_staff):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError('You need to be logged in.')
+
+        user_instance = User.objects.get(id=user_id)
+
+        if user.is_superuser == False:
+            raise GraphQLError('Access denied.')
+
+        if user.is_superuser:
+            user_instance.is_staff = is_staff
+        user_instance.save()
+        return UpdateUser(user=user_instance)
 
 class Mutation(graphene.ObjectType):
     update_user = UpdateUser.Field()
+    make_user_staff = MakeUserStaff.Field()

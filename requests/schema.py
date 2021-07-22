@@ -25,10 +25,24 @@ class Query(graphene.ObjectType):
         if user.is_anonymous:
             raise GraphQLError('You need to be logged in.')
 
-        if user.is_staff:
+        if user.is_superuser:
+            return gql_optimizer.query(Request.objects.all(), info)
+        elif user.is_staff:
             return gql_optimizer.query(Request.objects.filter(employee=info.context.user), info)
-        else:
+        elif user.is_staff == False:
             return gql_optimizer.query(Request.objects.filter(client=info.context.user), info)
 
     def resolve_request(self, info, id):
-        return Request.objects.get(id=id)
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError('You need to be logged in.')
+
+        request = Request.objects.get(id=id)
+
+        if user.is_superuser:
+            return request
+        elif user == request.client or user == request.employee:
+            return request
+        else:
+            raise GraphQLError('Not found')
