@@ -7,6 +7,7 @@ from graphql_auth import mutations
 
 import requests.schema
 import requests.mutations
+import users.mutations
 
 class AuthMutation(graphene.ObjectType):
     register = mutations.Register.Field()
@@ -16,7 +17,11 @@ class AuthMutation(graphene.ObjectType):
 class Query(UserQuery, MeQuery, requests.schema.Query, graphene.ObjectType):
     pass
 
-class Mutation(AuthMutation, requests.mutations.Mutation):
+class Mutation(
+    AuthMutation,
+    requests.mutations.Mutation,
+    users.mutations.Mutation,
+    ):
     pass
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
