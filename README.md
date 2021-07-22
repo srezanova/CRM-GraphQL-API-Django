@@ -97,3 +97,9 @@
 У администратора есть доступ ко всем заявкам.
 
 ![updateRequest](img/updateRequest.png)
+
+### Удаление заявок
+
+Удалить заявку может только администратор с помощью **deleteRequest Mutation**.
+
+![deleteRequest](img/deleteRequest.png)

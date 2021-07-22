@@ -108,15 +108,24 @@ class UpdateRequest(graphene.Mutation):
             return UpdateRequest(request=request_instance)
 
 class DeleteRequest(graphene.Mutation):
-    request = graphene.Field(RequestType)
+    '''
+    Only superuser can delete requests.
+    '''
+    request_id = graphene.ID()
 
     class Arguments:
         request_id = graphene.ID(required=True)
 
     def mutate(self, info, request_id):
-        request_instance = Request.objects.get(id=request_id)
-        request_instance.delete()
-        return None
+        user = info.context.user
+        if user.is_anonymous:
+            raise GraphQLError('You need to be logged in.')
+        if user.is_superuser != True:
+            raise GraphQLError('Access denied.')
+        request = Request.objects.get(id=request_id)
+        if request is not None:
+            request.delete()
+        return DeleteRequest(request_id=request_id)
 
 class Mutation(graphene.ObjectType):
     create_request = CreateRequest.Field()
