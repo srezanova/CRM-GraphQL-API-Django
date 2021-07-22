@@ -8,13 +8,13 @@ class Request(models.Model):
     employee = models.ForeignKey(User, related_name='employee', null=True, on_delete=models.SET_NULL)
     product = models.CharField(blank=True, max_length=200)
 
-    CONSULTING = 'CNSL'
-    DIAGNOSIS = 'DGNS'
-    REPAIR = 'REPA'
-    REPLACEMENT = 'RPLC'
-    RETURN = 'RTRN'
-    COMPLAINT = 'CMPL'
-    OTHER = 'OTHER'
+    CONSULTING = 'Consulting'
+    DIAGNOSIS = 'Diagnosis'
+    REPAIR = 'Repair'
+    REPLACEMENT = 'Replacement'
+    RETURN = 'Return'
+    COMPLAINT = 'Complaint'
+    OTHER = 'Other'
     CATEGORY_CHOICES = [
         (CONSULTING, 'Consulting'),
         (DIAGNOSIS, 'Diagnosis'),
@@ -25,10 +25,10 @@ class Request(models.Model):
         (OTHER, 'Other'),
     ]
 
-    OPEN = 'OPEN'
-    SCHEDULED = 'SCHEDULED'
-    CANCELED = 'CANCELED'
-    CLOSED = 'CLOSED'
+    OPEN = 'Open'
+    SCHEDULED = 'Scheduled'
+    CANCELED = 'Canceled'
+    CLOSED = 'Closed'
     STATUS_CHOICES = [
         (OPEN, 'Open'),
         (SCHEDULED, 'Scheduled'),

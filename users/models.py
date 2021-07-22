@@ -5,7 +5,6 @@ from django.contrib.auth.models import (
 from django.core.validators import RegexValidator
 
 
-
 class UserManager(BaseUserManager):
     """
     Creates and saves a User with the given email and password.
@@ -37,7 +36,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password, first_name, last_name, phone):
+    def create_superuser(self, email, password, first_name=None, last_name=None, phone=None):
         user = self.create_user(
             email,
             password=password,
@@ -59,10 +58,11 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    phone = models.CharField(max_length=20)
+    first_name = models.CharField(blank=True, null=True, max_length=255)
+    last_name = models.CharField(blank=True, null=True, max_length=255)
+    phone = models.CharField(blank=True, null=True, max_length=20)
     requests = models.ForeignKey('requests.Request', blank=True, related_name='requests', null=True, on_delete=models.SET_NULL)
+
     objects = UserManager()
 
     USERNAME_FIELD = 'email'

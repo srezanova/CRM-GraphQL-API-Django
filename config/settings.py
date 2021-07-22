@@ -3,8 +3,6 @@ import environ
 import os
 
 
-
-
 env = environ.Env()
 environ.Env.read_env()
 
@@ -25,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'requests',
     'users',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +65,10 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '',
     }
+}
+
+GRAPHENE = {
+    'SCHEMA': 'config.schema.schema',
 }
 
 AUTH_USER_MODEL = 'users.User'
