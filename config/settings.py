@@ -1,4 +1,5 @@
 from pathlib import Path
+from datetime import timedelta
 import environ
 import os
 
@@ -24,6 +25,9 @@ INSTALLED_APPS = [
     'requests',
     'users',
     'graphene_django',
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    'graphql_auth',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +73,37 @@ DATABASES = {
 
 GRAPHENE = {
     'SCHEMA': 'config.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
 }
+
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    'JWT_EXPIRATION_DELTA': timedelta(minutes=60),
+    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=50),
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+    'JWT_SECRET_KEY': env('JWT_SECRET_KEY'),
+    'JWT_ALGORITHM': 'HS256',
+    "JWT_ALLOW_ANY_CLASSES": [
+        "graphql_auth.mutations.Register",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+        "graphql_auth.mutations.RefreshToken",
+    ],
+}
+
+GRAPHQL_AUTH = {
+    'LOGIN_ALLOWED_FIELDS': ['email'],
+    'ALLOW_LOGIN_NOT_VERIFIED': True,
+    'REGISTER_MUTATION_FIELDS': ["email"],
+    'SEND_ACTIVATION_EMAIL': False,
+    }
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 AUTH_USER_MODEL = 'users.User'
 

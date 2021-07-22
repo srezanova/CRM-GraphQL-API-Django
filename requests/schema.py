@@ -7,7 +7,6 @@ from .models import Request
 from users.models import User
 
 
-
 class UserType(DjangoObjectType):
     class Meta:
         model = User
@@ -21,7 +20,15 @@ class Query(graphene.ObjectType):
     request = graphene.Field(RequestType, id=graphene.ID())
 
     def resolve_all_requests(self, info, **kwargs):
-        return gql_optimizer.query(Request.objects.all(), info)
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError('You need to be logged in.')
+
+        if user.is_staff:
+            return gql_optimizer.query(Request.objects.filter(employee=info.context.user), info)
+        else:
+            return gql_optimizer.query(Request.objects.filter(client=info.context.user), info)
 
     def resolve_request(self, info, id):
         return Request.objects.get(id=id)

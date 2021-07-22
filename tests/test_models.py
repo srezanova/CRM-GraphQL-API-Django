@@ -23,8 +23,8 @@ class UserModelTest(TestCase):
             phone='+7(916)000-00-01',
         )
 
-        self.admin = User.objects.create_superuser(
-            email='admin@test.com',
+        self.superuser = User.objects.create_superuser(
+            email='superuser@test.com',
             password='testpassword',
             first_name='Chris',
             last_name='Bold',
@@ -37,7 +37,7 @@ class UserModelTest(TestCase):
         self.assertEqual(self.client.first_name, 'Tom')
         self.assertEqual(self.client.last_name, 'Smith')
         self.assertEqual(self.client.phone, '+7(916)000-00-00')
-        self.assertFalse(self.client.admin)
+        self.assertFalse(self.client.is_superuser)
         self.assertFalse(self.client.staff)
 
     def test_staff_detail(self):
@@ -46,17 +46,17 @@ class UserModelTest(TestCase):
         self.assertEqual(self.staff.first_name, 'Ann')
         self.assertEqual(self.staff.last_name, 'Richard')
         self.assertEqual(self.staff.phone, '+7(916)000-00-01')
-        self.assertFalse(self.staff.admin)
+        self.assertFalse(self.staff.is_superuser)
         self.assertTrue(self.staff.staff)
 
-    def test_admin_detail(self):
-        self.assertEqual(self.admin.email, 'admin@test.com')
-        self.assertNotEqual(self.admin.password, 'testpassword') #hashed passwords
-        self.assertEqual(self.admin.first_name, 'Chris')
-        self.assertEqual(self.admin.last_name, 'Bold')
-        self.assertEqual(self.admin.phone, '+7(916)000-00-02')
-        self.assertTrue(self.admin.admin)
-        self.assertTrue(self.admin.staff)
+    def test_superuser_detail(self):
+        self.assertEqual(self.superuser.email, 'superuser@test.com')
+        self.assertNotEqual(self.superuser.password, 'testpassword') #hashed passwords
+        self.assertEqual(self.superuser.first_name, 'Chris')
+        self.assertEqual(self.superuser.last_name, 'Bold')
+        self.assertEqual(self.superuser.phone, '+7(916)000-00-02')
+        self.assertTrue(self.superuser.is_superuser)
+        self.assertTrue(self.superuser.staff)
 
     def test_user_no_email(self):
         with self.assertRaises(ValueError):

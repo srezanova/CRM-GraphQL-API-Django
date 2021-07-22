@@ -45,7 +45,7 @@ class UserManager(BaseUserManager):
             phone=phone,
         )
         user.staff = True
-        user.admin = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
 
@@ -57,16 +57,17 @@ class User(AbstractBaseUser):
     )
     is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False)
-    admin = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     first_name = models.CharField(blank=True, null=True, max_length=255)
     last_name = models.CharField(blank=True, null=True, max_length=255)
     phone = models.CharField(blank=True, null=True, max_length=20)
+    username = models.CharField(blank=True, null=True, max_length=20)
     requests = models.ForeignKey('requests.Request', blank=True, related_name='requests', null=True, on_delete=models.SET_NULL)
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    EMAIL_FIELD = 'email'
 
     def __str__(self):
         return self.email
