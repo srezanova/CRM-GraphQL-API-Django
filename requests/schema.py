@@ -4,16 +4,14 @@ from graphql import GraphQLError
 import graphene_django_optimizer as gql_optimizer
 
 from .models import Request
-from users.models import User
+from users.schema import UserType
 
-
-class UserType(DjangoObjectType):
-    class Meta:
-        model = User
 
 class RequestType(DjangoObjectType):
     class Meta:
         model = Request
+        exclude = ['requests']
+
 
 class Query(graphene.ObjectType):
     all_requests = graphene.List(RequestType)
