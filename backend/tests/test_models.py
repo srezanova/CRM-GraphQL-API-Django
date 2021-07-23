@@ -33,7 +33,8 @@ class UserModelTest(TestCase):
 
     def test_client_detail(self):
         self.assertEqual(self.client.email, 'client@test.com')
-        self.assertNotEqual(self.client.password, 'testpassword') #hashed passwords
+        self.assertNotEqual(self.client.password,
+                            'testpassword')  # hashed passwords
         self.assertEqual(self.client.first_name, 'Tom')
         self.assertEqual(self.client.last_name, 'Smith')
         self.assertEqual(self.client.phone, '+7(916)000-00-00')
@@ -42,7 +43,8 @@ class UserModelTest(TestCase):
 
     def test_staff_detail(self):
         self.assertEqual(self.staff.email, 'staff@test.com')
-        self.assertNotEqual(self.staff.password, 'testpassword') #hashed passwords
+        self.assertNotEqual(self.staff.password,
+                            'testpassword')  # hashed passwords
         self.assertEqual(self.staff.first_name, 'Ann')
         self.assertEqual(self.staff.last_name, 'Richard')
         self.assertEqual(self.staff.phone, '+7(916)000-00-01')
@@ -51,7 +53,8 @@ class UserModelTest(TestCase):
 
     def test_superuser_detail(self):
         self.assertEqual(self.superuser.email, 'superuser@test.com')
-        self.assertNotEqual(self.superuser.password, 'testpassword') #hashed passwords
+        self.assertNotEqual(self.superuser.password,
+                            'testpassword')  # hashed passwords
         self.assertEqual(self.superuser.first_name, 'Chris')
         self.assertEqual(self.superuser.last_name, 'Bold')
         self.assertEqual(self.superuser.phone, '+7(916)000-00-02')
@@ -80,13 +83,14 @@ class UserModelTest(TestCase):
 
     def test_normalize_email(self):
         user = User.objects.create_user(
-            email = '   test1@TEST.COM   ',
-            password = 'testpassword',
+            email='   test1@TEST.COM   ',
+            password='testpassword',
             first_name='Monica',
             last_name='Bing',
             phone='+7(916)000-00-05',
         )
         self.assertEqual(user.email, 'test1@test.com')
+
 
 class RequestModelTest(TestCase):
     def setUp(self):
@@ -114,8 +118,8 @@ class RequestModelTest(TestCase):
             status='Open',
             problem='Broken screen',
             solution='Fix screen',
-            contacts = 'Client asked to call this number 8-900-xxx-xx-xx.',
-            message = 'Your request was processed. We will contact with you shortly.'
+            contacts='Client asked to call this number 8-900-xxx-xx-xx.',
+            message='Your request was processed. We will contact with you shortly.'
         )
 
     def test_request_detail(self):
@@ -126,5 +130,7 @@ class RequestModelTest(TestCase):
         self.assertEqual(self.request.status, 'Open')
         self.assertEqual(self.request.problem, 'Broken screen')
         self.assertEqual(self.request.solution, 'Fix screen')
-        self.assertEqual(self.request.contacts, 'Client asked to call this number 8-900-xxx-xx-xx.')
-        self.assertEqual(self.request.message, 'Your request was processed. We will contact with you shortly.')
+        self.assertEqual(self.request.contacts,
+                         'Client asked to call this number 8-900-xxx-xx-xx.')
+        self.assertEqual(
+            self.request.message, 'Your request was processed. We will contact with you shortly.')

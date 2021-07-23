@@ -4,6 +4,7 @@ from graphql import GraphQLError
 from requests.schema import UserType
 from users.models import User
 
+
 class UserInput(graphene.InputObjectType):
     '''
     Arguments for User update mutation class.
@@ -13,6 +14,7 @@ class UserInput(graphene.InputObjectType):
     first_name = graphene.String()
     last_name = graphene.String()
     phone = graphene.String()
+
 
 class UpdateUser(graphene.Mutation):
     '''
@@ -45,6 +47,7 @@ class UpdateUser(graphene.Mutation):
             user_instance.save()
             return UpdateUser(user=user_instance)
 
+
 class MakeUserStaff(graphene.Mutation):
     '''
     Superuser can give staff rights to employees.
@@ -70,6 +73,7 @@ class MakeUserStaff(graphene.Mutation):
             user_instance.is_staff = is_staff
         user_instance.save()
         return UpdateUser(user=user_instance)
+
 
 class Mutation(graphene.ObjectType):
     update_user = UpdateUser.Field()

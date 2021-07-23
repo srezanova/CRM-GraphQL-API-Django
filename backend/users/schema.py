@@ -12,6 +12,7 @@ class UserType(DjangoObjectType):
         exclude = ['password', 'requests']
         description = " Type definition for a single request "
 
+
 class Query(graphene.ObjectType):
     all_users = graphene.List(UserType)
     user = graphene.Field(UserType, id=graphene.ID(required=True))

@@ -5,7 +5,8 @@ from .models import Request
 from .schema import RequestType, StatusEnum, CategoryEnum
 from users.models import User
 
-class RequestInputEmployee(graphene.InputObjectType):
+
+class RequestInput(graphene.InputObjectType):
     '''
     Arguments for Request create/update mutation classes.
     Defines fields allowing user to create or change the data.
@@ -17,48 +18,65 @@ class RequestInputEmployee(graphene.InputObjectType):
     client_id = graphene.ID()
     category = CategoryEnum()
     status = StatusEnum()
+    contacts = graphene.String()
+    message = graphene.String()
 
-class RequestInputClient(graphene.InputObjectType):
-    '''
-    Arguments for Request create/update mutation classes.
-    Defines fields allowing user to create or change the data.
-    '''
-    product = graphene.String()
-    problem = graphene.String()
 
-class CreateRequest(graphene.Mutation):
+class CreateRequestEmployee(graphene.Mutation):
     '''
     Staff can access all data in request.
-    Client can only access product and problem.
     '''
     request = graphene.Field(RequestType)
 
     class Arguments:
-        request_employee = RequestInputEmployee()
-        request_client = RequestInputClient()
+        request_data = RequestInput()
 
-    def mutate(self, info, request_employee=None, request_client=None):
+    def mutate(self, info, request_data):
         user = info.context.user
         if user.is_anonymous:
             raise GraphQLError('You need to be logged in.')
         if user.is_staff:
             request_instance = Request(
-                product=request_employee.product,
-                problem=request_employee.problem,
-                solution=request_employee.solution,
-                client_id=request_employee.client_id,
+                product=request_data.product,
+                problem=request_data.problem,
+                solution=request_data.solution,
+                client_id=request_data.client_id,
                 employee=user,
-                category=request_employee.category,
-                status=request_employee.status,
+                category=request_data.category,
+                status=request_data.status,
+                message=request_data.message,
             )
+        else:
+            raise GraphQLError('Access denied.')
+        request_instance.save()
+        return CreateRequestEmployee(request=request_instance)
+
+
+class CreateRequestClient(graphene.Mutation):
+    '''
+    Client can only access product and problem.
+    '''
+    request = graphene.Field(RequestType)
+
+    class Arguments:
+        product = graphene.String(required=True)
+        problem = graphene.String(required=True)
+
+    def mutate(self, info, product, problem):
+        user = info.context.user
+        if user.is_anonymous:
+            raise GraphQLError('You need to be logged in.')
         if user.is_staff == False:
             request_instance = Request(
-                product=request_client.product,
-                problem=request_client.problem,
+                product=product,
+                problem=problem,
                 client=user,
             )
+        else:
+            raise GraphQLError('Access denied.')
         request_instance.save()
-        return CreateRequest(request=request_instance)
+        return CreateRequestClient(request=request_instance)
+
 
 class UpdateRequest(graphene.Mutation):
     '''
@@ -67,7 +85,7 @@ class UpdateRequest(graphene.Mutation):
     request = graphene.Field(RequestType)
 
     class Arguments:
-        request_data = RequestInputEmployee(required=True)
+        request_data = RequestInput(required=True)
 
     def mutate(self, info, request_data):
         user = info.context.user
@@ -89,8 +107,13 @@ class UpdateRequest(graphene.Mutation):
                 request_instance.category = request_data.category
             if request_data.status is not None:
                 request_instance.status = request_data.status
+            if request_data.contacts is not None:
+                request_instance.contacts = request_data.contacts
+            if request_data.message is not None:
+                request_instance.message = request_data.message
             request_instance.save()
             return UpdateRequest(request=request_instance)
+
 
 class DeleteRequest(graphene.Mutation):
     '''
@@ -112,7 +135,9 @@ class DeleteRequest(graphene.Mutation):
             request.delete()
         return DeleteRequest(request_id=request_id)
 
+
 class Mutation(graphene.ObjectType):
-    create_request = CreateRequest.Field()
+    create_request_employee = CreateRequestEmployee.Field()
+    create_request_client = CreateRequestClient.Field()
     update_request = UpdateRequest.Field()
     delete_request = DeleteRequest.Field()

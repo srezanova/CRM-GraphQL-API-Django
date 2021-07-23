@@ -16,6 +16,7 @@ class StatusEnum(graphene.Enum):
     CANCELED = 'Canceled'
     CLOSED = 'Closed'
 
+
 class CategoryEnum(graphene.Enum):
     CONSULTING = 'Consulting'
     DIAGNOSIS = 'Diagnosis'
@@ -34,16 +35,23 @@ class RequestType(DjangoObjectType):
 
     created_at = graphene.String()
 
+
 class Query(graphene.ObjectType):
     my_requests = graphene.List(RequestType)
     all_requests = graphene.List(RequestType)
     request = graphene.Field(RequestType, id=graphene.ID(required=True))
-    all_requests_filter_status_and_category = graphene.List(RequestType, status=StatusEnum(), category=CategoryEnum())
-    my_requests_filter_status_and_category = graphene.List(RequestType, status=StatusEnum(), category=CategoryEnum())
-    all_requests_filter_status_or_category = graphene.List(RequestType, status=StatusEnum(), category=CategoryEnum())
-    my_requests_filter_status_or_category = graphene.List(RequestType, status=StatusEnum(), category=CategoryEnum())
-    all_requests_filter_date = graphene.List(RequestType, date=graphene.String(), date_start=graphene.String(), date_end=graphene.String())
-    my_requests_filter_date = graphene.List(RequestType, date=graphene.String(), date_start=graphene.String(), date_end=graphene.String())
+    all_requests_filter_status_and_category = graphene.List(
+        RequestType, status=StatusEnum(), category=CategoryEnum())
+    my_requests_filter_status_and_category = graphene.List(
+        RequestType, status=StatusEnum(), category=CategoryEnum())
+    all_requests_filter_status_or_category = graphene.List(
+        RequestType, status=StatusEnum(), category=CategoryEnum())
+    my_requests_filter_status_or_category = graphene.List(
+        RequestType, status=StatusEnum(), category=CategoryEnum())
+    all_requests_filter_date = graphene.List(RequestType, date=graphene.String(
+    ), date_start=graphene.String(), date_end=graphene.String())
+    my_requests_filter_date = graphene.List(RequestType, date=graphene.String(
+    ), date_start=graphene.String(), date_end=graphene.String())
 
     def resolve_my_requests(self, info, **kwargs):
         '''
@@ -126,7 +134,7 @@ class Query(graphene.ObjectType):
         if user.is_staff:
             return gql_optimizer.query(Request.objects.filter(
                 (Q(status=status) | Q(category=category))
-                ), info)
+            ), info)
         else:
             raise GraphQLError('Not found.')
 
@@ -140,8 +148,9 @@ class Query(graphene.ObjectType):
             raise GraphQLError('You need to be logged in.')
         if user.is_staff:
             return gql_optimizer.query(Request.objects.filter(
-                ((Q(status=status) & Q(employee=user)) | (Q(category=category) & Q(employee=user)))
-                ), info)
+                ((Q(status=status) & Q(employee=user)) |
+                 (Q(category=category) & Q(employee=user)))
+            ), info)
         else:
             raise GraphQLError('Not found.')
 
@@ -155,8 +164,9 @@ class Query(graphene.ObjectType):
             raise GraphQLError('You need to be logged in.')
         if user.is_staff:
             return gql_optimizer.query(Request.objects.filter(
-                (Q(created_at=date) | Q(created_at__range=[date_start, date_end]))
-                ), info)
+                (Q(created_at=date) | Q(
+                    created_at__range=[date_start, date_end]))
+            ), info)
         else:
             raise GraphQLError('Not found.')
 
@@ -170,8 +180,8 @@ class Query(graphene.ObjectType):
             raise GraphQLError('You need to be logged in.')
         if user.is_staff:
             return gql_optimizer.query(Request.objects.filter(
-                ((Q(created_at=date) & Q(employee=user))| (Q(created_at__range=[date_start, date_end]) & Q(employee=user)))
-                ), info)
+                ((Q(created_at=date) & Q(employee=user)) | (
+                    Q(created_at__range=[date_start, date_end]) & Q(employee=user)))
+            ), info)
         else:
             raise GraphQLError('Not found.')
-

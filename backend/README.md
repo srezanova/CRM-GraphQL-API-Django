@@ -58,19 +58,19 @@
 
 4. Тип заявки:
 
-    - Консультация
-    - Диагностика
-    - Ремонт
-    - Возврат
-    - Жалоба
-    - Прочее
+   - Консультация
+   - Диагностика
+   - Ремонт
+   - Возврат
+   - Жалоба
+   - Прочее
 
 5. Статус заявки:
 
-    - Открыта
-    - Запланирована
-    - Отменена
-    - Закрыта
+   - Открыта
+   - Запланирована
+   - Отменена
+   - Закрыта
 
 6. Описание проблемы от клиента
 
@@ -110,7 +110,7 @@
 
 ![myRequestsFilterStatusOrCategory](img/myRequestsFilterStatusOrCategory.png)
 
-- по дате или интервалу дат с помощью  **allRequestsFilterDate Query** или **myRequestsFilterDate Query**.
+- по дате или интервалу дат с помощью **allRequestsFilterDate Query** или **myRequestsFilterDate Query**.
 
 ![allRequestsFilterDate](img/allRequestsFilterDate.png)
 
@@ -122,19 +122,15 @@
 
 ### Создание заявок
 
-Пользователь / сотрудник может создать заявку с помощью **createRequest Mutation**.
+Пользователь / сотрудник могут создать заявки с помощью **createRequestClient Mutation** и **createRequestClient Mutation**.
 
-У клиента есть доступ к полям: техника, проблема. Необходимо выбрать поле заполнения **RequestInputClient**.
+У клиента есть доступ к полям: техника, проблема. Данные клиента автоматически заполняются по данным входа.
 
-Данные клиента автоматически заполняются по данным входа.
+![createRequestClient](img/createRequestClient.png)
 
-![requestClient](img/requestClient.png)
+У сотрудников есть доступ ко всем полям. Данные сотрудника автоматически заполняются по данным входа.
 
-У сотрудников есть доступ ко всем полям. Необходимо выбрать поле заполнения **RequestInputEmployee**.
-
-Данные сотрудника автоматически заполняются по данным входа.
-
-![requestEmployee](img/requestEmployee.png)
+![createRequestEmployee](img/createRequestEmployee.png)
 
 ### Изменение заявок
 

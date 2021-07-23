@@ -17,7 +17,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'domclick.srezanova.me',
-    ]
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -104,7 +104,7 @@ GRAPHQL_AUTH = {
     'ALLOW_LOGIN_NOT_VERIFIED': True,
     'REGISTER_MUTATION_FIELDS': ["email"],
     'SEND_ACTIVATION_EMAIL': False,
-    }
+}
 
 AUTHENTICATION_BACKENDS = [
     'graphql_jwt.backends.JSONWebTokenBackend',

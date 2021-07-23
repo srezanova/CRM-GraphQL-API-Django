@@ -9,6 +9,7 @@ class UserManager(BaseUserManager):
     """
     Creates and saves a User with the given email and password.
     """
+
     def create_user(self, email, password, first_name, last_name, phone):
         if not email:
             raise ValueError('Users must have an email address')
@@ -49,6 +50,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
 class User(AbstractBaseUser):
     email = models.EmailField(
         verbose_name='email address',
@@ -62,7 +64,8 @@ class User(AbstractBaseUser):
     last_name = models.CharField(blank=True, null=True, max_length=255)
     phone = models.CharField(blank=True, null=True, max_length=20, unique=True)
     username = models.CharField(blank=True, null=True, max_length=20)
-    requests = models.ForeignKey('requests.Request', blank=True, related_name='requests', null=True, on_delete=models.SET_NULL)
+    requests = models.ForeignKey('requests.Request', blank=True,
+                                 related_name='requests', null=True, on_delete=models.SET_NULL)
 
     objects = UserManager()
 

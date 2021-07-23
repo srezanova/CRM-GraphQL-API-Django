@@ -9,6 +9,7 @@ from config.schema import schema
 
 TestCase.maxDiff = None
 
+
 def execute_test_client_api_query(query, user=None, variable_values=None, **kwargs):
     """
     Returns the results of executing a graphQL query using the graphene test client.  This is a helper method for our tests
@@ -17,8 +18,10 @@ def execute_test_client_api_query(query, user=None, variable_values=None, **kwar
     context_value = request_factory.get('/graphql/')
     context_value.user = user
     client = Client(schema)
-    executed = client.execute(query, context_value=context_value, variable_values=variable_values, **kwargs)
+    executed = client.execute(
+        query, context_value=context_value, variable_values=variable_values, **kwargs)
     return executed
+
 
 class APITest(TestCase):
     def setUp(self):
@@ -112,12 +115,12 @@ class APITest(TestCase):
                 '''
 
         expected = {'me': {
-                        'id':'100',
-                        'email': 'user@test.com',
-                        'firstName': 'Tom',
-                        'lastName': 'Smith',
+            'id': '100',
+            'email': 'user@test.com',
+            'firstName': 'Tom',
+            'lastName': 'Smith',
                         'phone': '+7(916)000-00-01'
-                    }}
+        }}
 
         executed = execute_test_client_api_query(query, self.user)
         data = executed.get('data')
@@ -138,13 +141,13 @@ class APITest(TestCase):
                 '''
 
         expected = {'user': {
-                        'id': '100',
-                        'email': 'user@test.com',
-                        'phone': '+7(916)000-00-01',
-                        'isStaff': False,
-                        'firstName': 'Tom',
-                        'lastName': 'Smith'
-                    }}
+            'id': '100',
+            'email': 'user@test.com',
+            'phone': '+7(916)000-00-01',
+            'isStaff': False,
+            'firstName': 'Tom',
+            'lastName': 'Smith'
+        }}
 
         executed = execute_test_client_api_query(query, self.staff)
         data = executed.get('data')
@@ -159,7 +162,8 @@ class APITest(TestCase):
                 }
                 '''
 
-        expected = {'allUsers': [{'id': '100'}, {'id': '101'}, {'id': '102'}, {'id': '106'}, {'id': '103'}]}
+        expected = {'allUsers': [{'id': '100'}, {'id': '101'}, {
+            'id': '102'}, {'id': '106'}, {'id': '103'}]}
 
         executed = execute_test_client_api_query(query, self.superuser)
         data = executed.get('data')
@@ -193,7 +197,7 @@ class APITest(TestCase):
                                 'product': 'Phone',
                                 'solution': 'Fix screen',
                                 'status': 'OPEN'}
-        }
+                    }
 
         executed = execute_test_client_api_query(query, self.superuser)
         data = executed.get('data')
@@ -213,7 +217,7 @@ class APITest(TestCase):
         expected = {'allRequests': [
             {'id': '104', 'status': 'OPEN', 'category': 'REPAIR'},
             {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}
-            ]}
+        ]}
 
         executed = execute_test_client_api_query(query, self.superuser)
         data = executed.get('data')
@@ -230,7 +234,8 @@ class APITest(TestCase):
                 }
                 '''
 
-        expected = {'allRequestsFilterStatusAndCategory': [{'id': '104', 'status': 'OPEN', 'category': 'REPAIR'}]}
+        expected = {'allRequestsFilterStatusAndCategory': [
+            {'id': '104', 'status': 'OPEN', 'category': 'REPAIR'}]}
 
         executed = execute_test_client_api_query(query, self.staff2)
         data = executed.get('data')
@@ -247,7 +252,8 @@ class APITest(TestCase):
                 }
                 '''
 
-        expected = {'myRequestsFilterStatusAndCategory': [{'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}]}
+        expected = {'myRequestsFilterStatusAndCategory': [
+            {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}]}
 
         executed = execute_test_client_api_query(query, self.staff2)
         data = executed.get('data')
@@ -267,7 +273,7 @@ class APITest(TestCase):
         expected = {'allRequestsFilterStatusOrCategory': [
             {'id': '104', 'status': 'OPEN', 'category': 'REPAIR'},
             {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}
-            ]}
+        ]}
 
         executed = execute_test_client_api_query(query, self.staff2)
         data = executed.get('data')
@@ -284,7 +290,8 @@ class APITest(TestCase):
                 }
                 '''
 
-        expected = {'myRequestsFilterStatusOrCategory': [{'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}]}
+        expected = {'myRequestsFilterStatusOrCategory': [
+            {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}]}
 
         executed = execute_test_client_api_query(query, self.staff2)
         data = executed.get('data')
@@ -297,7 +304,7 @@ class APITest(TestCase):
         expected = {'allRequestsFilterDate': [
             {'id': '104', 'status': 'OPEN', 'category': 'REPAIR'},
             {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}
-            ]}
+        ]}
 
         executed = execute_test_client_api_query(query, self.staff2)
         data = executed.get('data')
@@ -307,8 +314,8 @@ class APITest(TestCase):
         date = self.request1.created_at
         query = f'query {{ myRequestsFilterDate (date:"{date}") {{ id status category }} }}'
 
-
-        expected = {'myRequestsFilterDate': [{'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}]}
+        expected = {'myRequestsFilterDate': [
+            {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}]}
 
         executed = execute_test_client_api_query(query, self.staff2)
         data = executed.get('data')
