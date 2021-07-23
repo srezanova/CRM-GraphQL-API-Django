@@ -40,3 +40,4 @@ class Request(models.Model):
     status = models.CharField(blank=True, choices=STATUS_CHOICES, max_length=15)
     problem = models.CharField(blank=False, max_length=255)
     solution = models.CharField(blank=True, max_length=255)
+    contacts = models.CharField(blank=True, max_length=255)
