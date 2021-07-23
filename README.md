@@ -90,15 +90,13 @@
 
 Сотрудники могут получить доступ ко всем заявкам компании с помощью **allRequests Query**.
 
-### Фильтрация данных
+### Фильтрация заявок
 
 Сотрудники могут фильтровать заявки:
+
     - по статусам и категориям с помощью **allRequestsFilterStatusAndCategory Query** или **myRequestsFilterStatusAndCategory Query**.
-
 ![allRequestsFilterStatusAndCategory](img/allRequestsFilterStatusAndCategory.png)
-
 ![myRequestsFilterStatusAndCategory](img/myRequestsFilterStatusAndCategory.png)
-
     - по статусам или категориям с помощью **allRequestsFilterStatusOrCategory Query** или **myRequestsFilterStatusOrCategory Query**.
 
 ![allRequestsFilterStatusOrCategory_category](img/allRequestsFilterStatusOrCategory_category.png)
