@@ -12,7 +12,12 @@ SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = (env('DEBUG') == 'True')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '161.35.148.21',
+    'localhost',
+    '127.0.0.1',
+    'domclick.srezanova.me',
+    ]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
