@@ -11,32 +11,32 @@ class Request(models.Model):
         User, related_name='employee', null=True, on_delete=models.SET_NULL)
     product = models.CharField(blank=False, max_length=200)
 
-    CONSULTING = 'Consulting'
-    DIAGNOSIS = 'Diagnosis'
-    REPAIR = 'Repair'
-    REPLACEMENT = 'Replacement'
-    RETURN = 'Return'
-    COMPLAINT = 'Complaint'
-    OTHER = 'Other'
+    CONSULTING = 'CONSULTING'
+    DIAGNOSIS = 'DIAGNOSIS'
+    REPAIR = 'REPAIR'
+    REPLACEMENT = 'REPLACEMENT'
+    RETURN = 'RETURN'
+    COMPLAINT = 'COMPLAINT'
+    OTHER = 'OTHER'
     CATEGORY_CHOICES = [
         (CONSULTING, 'Consulting'),
-        (DIAGNOSIS, 'Diagnosis'),
-        (REPAIR, 'Repair'),
-        (REPLACEMENT, 'Replacement'),
-        (RETURN, 'Return'),
-        (COMPLAINT, 'Complaint'),
-        (OTHER, 'Other'),
+        (DIAGNOSIS, 'DIAGNOSIS'),
+        (REPAIR, 'REPAIR'),
+        (REPLACEMENT, 'REPLACEMENT'),
+        (RETURN, 'RETURN'),
+        (COMPLAINT, 'COMPLAINT'),
+        (OTHER, 'OTHER'),
     ]
 
-    OPEN = 'Open'
-    SCHEDULED = 'Scheduled'
-    CANCELED = 'Canceled'
-    CLOSED = 'Closed'
+    OPEN = 'OPEN'
+    SCHEDULED = 'SCHEDULED'
+    CANCELED = 'CANCELED'
+    CLOSED = 'CLOSED'
     STATUS_CHOICES = [
-        (OPEN, 'Open'),
-        (SCHEDULED, 'Scheduled'),
-        (CANCELED, 'Canceled'),
-        (CLOSED, 'Closed'),
+        (OPEN, 'OPEN'),
+        (SCHEDULED, 'SCHEDULED'),
+        (CANCELED, 'CANCELED'),
+        (CLOSED, 'CLOSED'),
     ]
 
     category = models.CharField(
@@ -46,4 +46,4 @@ class Request(models.Model):
     problem = models.CharField(blank=False, max_length=255)
     solution = models.CharField(blank=True, max_length=255)
     contacts = models.CharField(blank=True, max_length=255)
-    message = models.TextField(blank=True)
+    message = models.TextField(blank=True, null=True)

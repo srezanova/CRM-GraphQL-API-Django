@@ -11,20 +11,20 @@ from users.schema import UserType
 
 
 class StatusEnum(graphene.Enum):
-    OPEN = 'Open'
-    SCHEDULED = 'Scheduled'
-    CANCELED = 'Canceled'
-    CLOSED = 'Closed'
+    OPEN = 'OPEN'
+    SCHEDULED = 'SCHEDULED'
+    CANCELED = 'CANCELED'
+    CLOSED = 'CLOSED'
 
 
 class CategoryEnum(graphene.Enum):
-    CONSULTING = 'Consulting'
-    DIAGNOSIS = 'Diagnosis'
-    REPAIR = 'Repair'
-    REPLACEMENT = 'Replacement'
-    RETURN = 'Return'
-    COMPLAINT = 'Complaint'
-    OTHER = 'Other'
+    CONSULTING = 'CONSULTING'
+    DIAGNOSIS = 'DIAGNOSIS'
+    REPAIR = 'REPAIR'
+    REPLACEMENT = 'REPLACEMENT'
+    RETURN = 'RETURN'
+    COMPLAINT = 'COMPLAINT'
+    OTHER = 'OTHER'
 
 
 class RequestType(DjangoObjectType):
