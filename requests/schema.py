@@ -1,10 +1,13 @@
+import datetime
+
+from django.db.models import Q
 import graphene
 from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 import graphene_django_optimizer as gql_optimizer
+
 from .models import Request
 from users.schema import UserType
-from django.db.models import Q
 
 
 class StatusEnum(graphene.Enum):
@@ -29,6 +32,8 @@ class RequestType(DjangoObjectType):
         exclude = ['requests']
         description = " Type definition for a single request "
 
+    created_at = graphene.String()
+
 class Query(graphene.ObjectType):
     my_requests = graphene.List(RequestType)
     all_requests = graphene.List(RequestType)
@@ -37,6 +42,8 @@ class Query(graphene.ObjectType):
     my_requests_filter_status_and_category = graphene.List(RequestType, status=StatusEnum(), category=CategoryEnum())
     all_requests_filter_status_or_category = graphene.List(RequestType, status=StatusEnum(), category=CategoryEnum())
     my_requests_filter_status_or_category = graphene.List(RequestType, status=StatusEnum(), category=CategoryEnum())
+    all_requests_filter_date = graphene.List(RequestType, date=graphene.String(), date_start=graphene.String(), date_end=graphene.String())
+    my_requests_filter_date = graphene.List(RequestType, date=graphene.String(), date_start=graphene.String(), date_end=graphene.String())
 
     def resolve_my_requests(self, info, **kwargs):
         '''
@@ -91,7 +98,7 @@ class Query(graphene.ObjectType):
         if user.is_anonymous:
             raise GraphQLError('You need to be logged in.')
         if user.is_staff:
-            return Request.objects.filter((Q(status=status) & Q(category=category)))
+            return gql_optimizer.query(Request.objects.filter((Q(status=status) & Q(category=category))), info)
         else:
             raise GraphQLError('Not found.')
 
@@ -104,7 +111,7 @@ class Query(graphene.ObjectType):
         if user.is_anonymous:
             raise GraphQLError('You need to be logged in.')
         if user.is_staff:
-            return Request.objects.filter((Q(status=status) & Q(category=category) & Q(employee=user)))
+            return gql_optimizer.query(Request.objects.filter((Q(status=status) & Q(category=category) & Q(employee=user))), info)
         else:
             raise GraphQLError('Not found.')
 
@@ -117,7 +124,9 @@ class Query(graphene.ObjectType):
         if user.is_anonymous:
             raise GraphQLError('You need to be logged in.')
         if user.is_staff:
-            return Request.objects.filter((Q(status=status) | Q(category=category)))
+            return gql_optimizer.query(Request.objects.filter(
+                (Q(status=status) | Q(category=category))
+                ), info)
         else:
             raise GraphQLError('Not found.')
 
@@ -130,6 +139,39 @@ class Query(graphene.ObjectType):
         if user.is_anonymous:
             raise GraphQLError('You need to be logged in.')
         if user.is_staff:
-            return Request.objects.filter(((Q(status=status) & Q(employee=user)) | (Q(category=category) & Q(employee=user))))
+            return gql_optimizer.query(Request.objects.filter(
+                ((Q(status=status) & Q(employee=user)) | (Q(category=category) & Q(employee=user)))
+                ), info)
         else:
             raise GraphQLError('Not found.')
+
+    def resolve_all_requests_filter_date(self, info, date=None, date_start=None, date_end=None):
+        '''
+        Resolves all requests by date.
+        '''
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError('You need to be logged in.')
+        if user.is_staff:
+            return gql_optimizer.query(Request.objects.filter(
+                (Q(created_at=date) | Q(created_at__range=[date_start, date_end]))
+                ), info)
+        else:
+            raise GraphQLError('Not found.')
+
+    def resolve_my_requests_filter_date(self, info, date=None, date_start=None, date_end=None):
+        '''
+        Resolves all requests by date.
+        '''
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise GraphQLError('You need to be logged in.')
+        if user.is_staff:
+            return gql_optimizer.query(Request.objects.filter(
+                ((Q(created_at=date) & Q(employee=user))| (Q(created_at__range=[date_start, date_end]) & Q(employee=user)))
+                ), info)
+        else:
+            raise GraphQLError('Not found.')
+

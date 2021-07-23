@@ -108,6 +108,16 @@
 
 ![myRequestsFilterStatusOrCategory](img/myRequestsFilterStatusOrCategory.png)
 
+- по дате или интервалу дат с помощью  **allRequestsFilterDate Query** или **myRequestsFilterDate Query**.
+
+![allRequestsFilterDate](img/allRequestsFilterDate.png)
+
+![allRequestsFilterDate_range](img/allRequestsFilterDate_range.png)
+
+![myRequestsFilterDate](img/myRequestsFilterDate.png)
+
+![myRequestsFilterDate_range](img/myRequestsFilterDate_range.png)
+
 ### Создание заявок
 
 Пользователь / сотрудник может создать заявку с помощью **createRequest Mutation**.

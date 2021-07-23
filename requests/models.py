@@ -1,9 +1,9 @@
 from django.db import models
 from users.models import User
-
+from config import settings
 
 class Request(models.Model):
-    created_at = models.DateField(auto_now_add = True)
+    created_at = models.DateField(auto_now_add=True)
     client = models.ForeignKey(User, related_name='client', null=True, on_delete=models.SET_NULL)
     employee = models.ForeignKey(User, related_name='employee', null=True, on_delete=models.SET_NULL)
     product = models.CharField(blank=False, max_length=200)
