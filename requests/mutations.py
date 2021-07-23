@@ -2,23 +2,8 @@ import graphene
 from graphql import GraphQLError
 
 from .models import Request
-from .schema import RequestType
+from .schema import RequestType, StatusEnum, CategoryEnum
 from users.models import User
-
-class StatusEnum(graphene.Enum):
-    OPEN = 'Open'
-    SCHEDULED = 'Scheduled'
-    CANCELED = 'Canceled'
-    CLOSED = 'Closed'
-
-class CategoryEnum(graphene.Enum):
-    CONSULTING = 'Consulting'
-    DIAGNOSIS = 'Diagnosis'
-    REPAIR = 'Repair'
-    REPLACEMENT = 'Replacement'
-    RETURN = 'Return'
-    COMPLAINT = 'Complaint'
-    OTHER = 'Other'
 
 class RequestInputEmployee(graphene.InputObjectType):
     '''

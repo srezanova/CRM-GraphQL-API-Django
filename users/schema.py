@@ -10,6 +10,7 @@ class UserType(DjangoObjectType):
     class Meta:
         model = User
         exclude = ['password', 'requests']
+        description = " Type definition for a single request "
 
 class Query(graphene.ObjectType):
     all_users = graphene.List(UserType)

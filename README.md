@@ -80,15 +80,32 @@
 
 ### Получение данных о заявках
 
-Пользователь / сотрудник может получить информацию по всем своим заявкам с помощью **allRequests Query**.
+Пользователь / сотрудник может получить информацию по всем своим заявкам с помощью **myRequests Query**.
 
-У администратора есть доступ ко всем заявкам.
+![myRequests](img/myRequests.png)
 
-![allRequests](img/allRequests.png)
-
-Или можно получить данные только определенной заявки по ее ID с помощью **request Query**.
+Пользователь / сотрудник может получить данные заявки по ее ID с помощью **request Query**.
 
 ![request](img/request.png)
+
+Сотрудники могут получить доступ ко всем заявкам компании с помощью **allRequests Query**.
+
+### Фильтрация данных
+
+Сотрудники могут фильтровать заявки:
+    - по статусам и категориям с помощью **allRequestsFilterStatusAndCategory Query** или **myRequestsFilterStatusAndCategory Query**.
+
+![allRequestsFilterStatusAndCategory](img/allRequestsFilterStatusAndCategory.png)
+
+![myRequestsFilterStatusAndCategory](img/myRequestsFilterStatusAndCategory.png)
+
+    - по статусам или категориям с помощью **allRequestsFilterStatusOrCategory Query** или **myRequestsFilterStatusOrCategory Query**.
+
+![allRequestsFilterStatusOrCategory_category](img/allRequestsFilterStatusOrCategory_category.png)
+
+![allRequestsFilterStatusOrCategory_status](img/allRequestsFilterStatusOrCategory_status.png)
+
+![myRequestsFilterStatusOrCategory](img/myRequestsFilterStatusOrCategory.png)
 
 ### Создание заявок
 
