@@ -114,6 +114,8 @@ class RequestModelTest(TestCase):
             status='Open',
             problem='Broken screen',
             solution='Fix screen',
+            contacts = 'Client asked to call this number 8-900-xxx-xx-xx.',
+            message = 'Your request was processed. We will contact with you shortly.'
         )
 
     def test_request_detail(self):
@@ -124,3 +126,5 @@ class RequestModelTest(TestCase):
         self.assertEqual(self.request.status, 'Open')
         self.assertEqual(self.request.problem, 'Broken screen')
         self.assertEqual(self.request.solution, 'Fix screen')
+        self.assertEqual(self.request.contacts, 'Client asked to call this number 8-900-xxx-xx-xx.')
+        self.assertEqual(self.request.message, 'Your request was processed. We will contact with you shortly.')

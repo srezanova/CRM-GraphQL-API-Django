@@ -60,7 +60,7 @@ class User(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
     first_name = models.CharField(blank=True, null=True, max_length=255)
     last_name = models.CharField(blank=True, null=True, max_length=255)
-    phone = models.CharField(blank=True, null=True, max_length=20)
+    phone = models.CharField(blank=True, null=True, max_length=20, unique=True)
     username = models.CharField(blank=True, null=True, max_length=20)
     requests = models.ForeignKey('requests.Request', blank=True, related_name='requests', null=True, on_delete=models.SET_NULL)
 

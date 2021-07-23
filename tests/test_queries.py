@@ -28,37 +28,48 @@ class APITest(TestCase):
             password='testpassword',
             first_name='Tom',
             last_name='Smith',
-            phone='+7(916)000-00-00',
+            phone='+7(916)000-00-01',
         )
 
         self.user2 = User.objects.create(
-            id=102,
+            id=101,
             email='user2@test.com',
             password='testpassword',
             first_name='Jimmy',
             last_name='Craig',
-            phone='+7(916)000-00-00',
+            phone='+7(916)000-00-02',
         )
 
         self.staff = User.objects.create(
-            id=101,
+            id=102,
             email='staff@test.com',
             password='testpassword',
             first_name='Ann',
             last_name='Richard',
-            phone='+7(916)000-00-01',
+            phone='+7(916)000-00-03',
+            is_staff=True,
+        )
+
+        self.staff2 = User.objects.create(
+            id=106,
+            email='staff2@test.com',
+            password='testpassword',
+            first_name='James',
+            last_name='Bottom',
+            phone='+7(916)000-00-04',
             is_staff=True,
         )
 
         self.superuser = User.objects.create(
-            id=104,
+            id=103,
             email='superuser@test.com',
             password='testpassword',
             is_superuser=True,
+            is_staff=True,
         )
 
         self.request1 = Request.objects.create(
-            id=100,
+            id=104,
             client=self.user,
             employee=self.staff,
             product='Phone',
@@ -68,12 +79,24 @@ class APITest(TestCase):
             solution='Fix screen',
         )
 
+        self.request2 = Request.objects.create(
+            id=105,
+            client=self.user2,
+            employee=self.staff2,
+            product='Fridge',
+            category='Consulting',
+            status='Canceled',
+            problem='Icecream is melting',
+            solution='Unplugging it and plugging back fixed the problem',
+        )
+
     def tearDown(self):
         self.user.delete()
         self.user2.delete()
         self.staff.delete()
         self.superuser.delete()
         self.request1.delete()
+        self.request2.delete()
 
     def test_me_query(self):
         query = '''
@@ -93,7 +116,7 @@ class APITest(TestCase):
                         'email': 'user@test.com',
                         'firstName': 'Tom',
                         'lastName': 'Smith',
-                        'phone': '+7(916)000-00-00'
+                        'phone': '+7(916)000-00-01'
                     }}
 
         executed = execute_test_client_api_query(query, self.user)
@@ -117,7 +140,7 @@ class APITest(TestCase):
         expected = {'user': {
                         'id': '100',
                         'email': 'user@test.com',
-                        'phone': '+7(916)000-00-00',
+                        'phone': '+7(916)000-00-01',
                         'isStaff': False,
                         'firstName': 'Tom',
                         'lastName': 'Smith'
@@ -136,7 +159,7 @@ class APITest(TestCase):
                 }
                 '''
 
-        expected = {'allUsers': [{'id': '100'}, {'id': '102'}, {'id': '101'}, {'id': '104'}]}
+        expected = {'allUsers': [{'id': '100'}, {'id': '101'}, {'id': '102'}, {'id': '106'}, {'id': '103'}]}
 
         executed = execute_test_client_api_query(query, self.superuser)
         data = executed.get('data')
@@ -145,7 +168,7 @@ class APITest(TestCase):
     def test_request_query(self):
         query = '''
                 query {
-                    request (id:100) {
+                    request (id:104) {
                         id
                         product
                         problem
@@ -165,7 +188,7 @@ class APITest(TestCase):
         expected = {'request': {'category': 'REPAIR',
                                 'client': {'email': 'user@test.com'},
                                 'employee': {'email': 'staff@test.com'},
-                                'id': '100',
+                                'id': '104',
                                 'problem': 'Broken screen',
                                 'product': 'Phone',
                                 'solution': 'Fix screen',
@@ -181,31 +204,112 @@ class APITest(TestCase):
                 query {
                     allRequests {
                         id
-                        product
-                        problem
-                        solution
                         status
                         category
-                        employee {
-                            email
-                        }
-                        client {
-                            email
-                        }
                     }
                 }
                 '''
 
-        expected = {'allRequests': [{'id': '100',
-                                    'product': 'Phone',
-                                    'problem': 'Broken screen',
-                                    'solution': 'Fix screen',
-                                    'status': 'OPEN',
-                                    'category': 'REPAIR',
-                                    'employee': {'email': 'staff@test.com'},
-                                    'client': {'email': 'user@test.com'}}]
-        }
+        expected = {'allRequests': [
+            {'id': '104', 'status': 'OPEN', 'category': 'REPAIR'},
+            {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}
+            ]}
 
         executed = execute_test_client_api_query(query, self.superuser)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_all_requests_filter_status_and_category(self):
+        query = '''
+                query {
+                    allRequestsFilterStatusAndCategory (status:OPEN, category:REPAIR) {
+                        id
+                        status
+                        category
+                    }
+                }
+                '''
+
+        expected = {'allRequestsFilterStatusAndCategory': [{'id': '104', 'status': 'OPEN', 'category': 'REPAIR'}]}
+
+        executed = execute_test_client_api_query(query, self.staff2)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_my_requests_filter_status_and_category(self):
+        query = '''
+                query {
+                    myRequestsFilterStatusAndCategory (status:CANCELED, category:CONSULTING) {
+                        id
+                        status
+                        category
+                    }
+                }
+                '''
+
+        expected = {'myRequestsFilterStatusAndCategory': [{'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}]}
+
+        executed = execute_test_client_api_query(query, self.staff2)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_all_requests_filter_status_or_category(self):
+        query = '''
+                query {
+                    allRequestsFilterStatusOrCategory (status:OPEN, category:CONSULTING) {
+                        id
+                        status
+                        category
+                    }
+                }
+                '''
+
+        expected = {'allRequestsFilterStatusOrCategory': [
+            {'id': '104', 'status': 'OPEN', 'category': 'REPAIR'},
+            {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}
+            ]}
+
+        executed = execute_test_client_api_query(query, self.staff2)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_my_requests_filter_status_or_category(self):
+        query = '''
+                query {
+                    myRequestsFilterStatusOrCategory (status:OPEN, category:CONSULTING) {
+                        id
+                        status
+                        category
+                    }
+                }
+                '''
+
+        expected = {'myRequestsFilterStatusOrCategory': [{'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}]}
+
+        executed = execute_test_client_api_query(query, self.staff2)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_all_requests_filter_data(self):
+        date = self.request1.created_at
+        query = f'query {{ allRequestsFilterDate (date:"{date}") {{ id status category }} }}'
+
+        expected = {'allRequestsFilterDate': [
+            {'id': '104', 'status': 'OPEN', 'category': 'REPAIR'},
+            {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}
+            ]}
+
+        executed = execute_test_client_api_query(query, self.staff2)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_my_requests_filter_data(self):
+        date = self.request1.created_at
+        query = f'query {{ myRequestsFilterDate (date:"{date}") {{ id status category }} }}'
+
+
+        expected = {'myRequestsFilterDate': [{'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}]}
+
+        executed = execute_test_client_api_query(query, self.staff2)
         data = executed.get('data')
         self.assertEqual(data, expected)

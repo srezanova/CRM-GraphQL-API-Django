@@ -41,3 +41,4 @@ class Request(models.Model):
     problem = models.CharField(blank=False, max_length=255)
     solution = models.CharField(blank=True, max_length=255)
     contacts = models.CharField(blank=True, max_length=255)
+    message = models.TextField(blank=True)
