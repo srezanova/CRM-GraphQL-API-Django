@@ -2,6 +2,8 @@ from django.test import RequestFactory, TestCase
 from unittest import skip
 from graphql import GraphQLError
 from graphene.test import Client
+from django.contrib.auth import get_user_model
+from graphql_jwt.testcases import JSONWebTokenTestCase
 
 from users.models import User
 from requests.models import Request, Customer
@@ -32,6 +34,11 @@ class MutationTest(TestCase):
             password='testpassword',
         )
 
+        self.user1 = User.objects.create_user(
+            email='user1@test.com',
+            password='testpassword',
+        )
+
     def tearDown(self):
         self.user.delete()
 
@@ -56,4 +63,47 @@ class MutationTest(TestCase):
 
         executed = execute_query(query, self.user)
         data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_register_mutation(self):
+        query = '''
+            mutation {
+                register (email:"test@test.com",
+                    password1:"testpassword",
+                    password2:"testpassword") {
+                        success
+                }
+            }
+                '''
+
+        expected = {
+            "register": {
+                "success": True
+            }
+        }
+
+        executed = execute_query(query, self.user)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_login_mutation(self):
+        query = '''
+            mutation {
+                login (email:"user1@test.com",
+                password:"testpassword") {
+                    success
+                }
+            }
+                '''
+
+        expected = {
+            "login": {
+                "success": True
+            }
+        }
+
+        executed = execute_query(query, self.user1)
+        data = executed.get('data')
+        print('')
+        print(data)
         self.assertEqual(data, expected)
