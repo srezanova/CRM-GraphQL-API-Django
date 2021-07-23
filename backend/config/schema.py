@@ -13,11 +13,11 @@ class AuthMutation(graphene.ObjectType):
     refresh_token = mutations.RefreshToken.Field()
 
 
-class Query(users.schema.Query, graphene.ObjectType):
+class Query(users.schema.Query, requests.schema.Query, graphene.ObjectType):
     pass
 
 
-class Mutation(AuthMutation, users.mutations.Mutation):
+class Mutation(AuthMutation, users.mutations.Mutation, requests.mutations.Mutation):
     pass
 
 

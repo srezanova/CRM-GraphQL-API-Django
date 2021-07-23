@@ -6,9 +6,7 @@ from users.models import User
 
 
 class UpdateUser(graphene.Mutation):
-    '''
-    Changes user's email.
-    '''
+    '''Changes user's email.'''
     user = graphene.Field(UserType)
 
     class Arguments:

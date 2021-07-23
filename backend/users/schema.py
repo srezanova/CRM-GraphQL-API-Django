@@ -10,13 +10,11 @@ class UserType(DjangoObjectType):
     class Meta:
         model = User
         fields = ['id', 'email']
-        description = "Type definition for a single request."
+        description = "Type definition for a single user."
 
 
 class Query(graphene.ObjectType):
-    '''
-    Resolves id and email of authenticated user.
-    '''
+    '''Resolves id and email of authenticated user.'''
 
     me = graphene.Field(UserType)
 
