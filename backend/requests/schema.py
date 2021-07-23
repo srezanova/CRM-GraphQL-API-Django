@@ -30,7 +30,6 @@ class CategoryEnum(graphene.Enum):
 class RequestType(DjangoObjectType):
     class Meta:
         model = Request
-        exclude = ['requests']
         description = " Type definition for a single request "
 
     created_at = graphene.String()

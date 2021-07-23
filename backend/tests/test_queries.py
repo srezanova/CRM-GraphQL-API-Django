@@ -24,7 +24,7 @@ def execute_query(query, user=None, variable_values=None, **kwargs):
     return executed
 
 
-class APITest(TestCase):
+class QueryTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(
             id=100,
