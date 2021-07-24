@@ -1,4 +1,3 @@
-from inspect import stack
 from django.db.models import Q
 from django.test import client
 import graphene
@@ -6,13 +5,14 @@ from graphene_django import DjangoObjectType
 from graphql import GraphQLError
 import graphene_django_optimizer as gql_optimizer
 
+
 from .models import Request, Customer
 from users.schema import UserType
 
 
 class StatusEnum(graphene.Enum):
     ACCEPTED = 'ACCEPTED'
-    IN_PROCCESS = 'IN_PROCCESS'
+    IN_PROGRESS = 'IN_PROGRESS'
     READY = 'READY'
     CLOSED = 'CLOSED'
 
@@ -65,7 +65,10 @@ class Query(graphene.ObjectType):
             raise GraphQLError('You need to be logged in.')
 
         if customer_phone is not None:
-            customer = Customer.objects.get(phone=customer_phone)
+            try:
+                customer = Customer.objects.get(phone=customer_phone)
+            except Customer.DoesNotExist:
+                return []
 
         # saving passed args for filter and deleting fields we cannot pass in filter
         saved_args = locals()
@@ -103,7 +106,10 @@ class Query(graphene.ObjectType):
         if user.is_anonymous:
             raise GraphQLError('You need to be logged in.')
 
-        return Request.objects.get(id=id)
+        try:
+            return Request.objects.get(id=id)
+        except Request.DoesNotExist:
+            raise GraphQLError('Not found.')
 
     def resolve_all_customers(self, info, phone=None):
         '''Resolves all customers.'''
@@ -121,4 +127,7 @@ class Query(graphene.ObjectType):
         if user.is_anonymous:
             raise GraphQLError('You need to be logged in.')
 
-        return Customer.objects.get(id=id)
+        try:
+            return Customer.objects.get(id=id)
+        except Customer.DoesNotExist:
+            raise GraphQLError('Not found.')

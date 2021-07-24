@@ -25,12 +25,12 @@ class Request(models.Model):
     ]
 
     ACCEPTED = 'ACCEPTED'
-    IN_PROCCESS = 'IN_PROCCESS'
+    IN_PROGRESS = 'IN_PROGRESS'
     READY = 'READY'
     CLOSED = 'CLOSED'
     STATUS_CHOICES = [
         (ACCEPTED, 'ACCEPTED'),
-        (IN_PROCCESS, 'IN_PROCCESS'),
+        (IN_PROGRESS, 'IN_PROGRESS'),
         (READY, 'READY'),
         (CLOSED, 'CLOSED'),
     ]
