@@ -32,8 +32,48 @@ class QueryTest(TestCase):
             password='testpassword',
         )
 
+        self.user2 = User.objects.create(
+            id=101,
+            email='user2@test.com',
+            password='testpassword',
+        )
+
+        self.customer = Customer.objects.create(
+            id=200,
+            phone='+7(800)-000-00-00',
+            first_name='Jerry',
+            last_name='Smith',
+        )
+
+        self.customer2 = Customer.objects.create(
+            id=201,
+            phone='+7(801)-000-00-00',
+            first_name='Frank',
+            last_name='Berry',
+        )
+
+        self.request = Request.objects.create(
+            id=300,
+            employee=self.user,
+            category='DIAGNOSIS',
+            status='ACCEPTED',
+            description='Broken phone.',
+            customer=self.customer,
+        )
+
+        self.request = Request.objects.create(
+            id=301,
+            employee=self.user2,
+            category='CONSULTING',
+            status='CLOSED',
+            description='Broken phone.',
+            customer=self.customer2,
+        )
+
     def tearDown(self):
         self.user.delete()
+        self.customer.delete()
+        self.request.delete()
 
     def test_me_query(self):
         query = '''
@@ -54,162 +94,187 @@ class QueryTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    @skip('test')
-    def test_request_query(self):
+    def test_customer_by_id_query(self):
         query = '''
-                query {
-                    request (id:104) {
-                        id
-                        product
-                        problem
-                        solution
-                        status
-                        category
-                        employee {
-                            email
-                        }
-                        client {
-                            email
-                        }
-                    }
+            query {
+                customerById(id:200) {
+                    id
+                    phone
+                    firstName
+                    lastName
                 }
+            }
                 '''
 
-        expected = {'request': {'category': 'REPAIR',
-                                'client': {'email': 'user@test.com'},
-                                'employee': {'email': 'staff@test.com'},
-                                'id': '104',
-                                'problem': 'Broken screen',
-                                'product': 'Phone',
-                                'solution': 'Fix screen',
-                                'status': 'OPEN'}
-                    }
+        expected = {'customerById': {
+            'id': '200',
+            'phone': '+7(800)-000-00-00',
+            'firstName': 'Jerry',
+            'lastName': 'Smith'}}
 
-        executed = execute_query(query, self.superuser)
+        executed = execute_query(query, self.user)
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    @skip('test')
+    def test_all_customers_query(self):
+        query = '''
+            query {
+                allCustomers {
+                    id
+                    phone
+                    firstName
+                    lastName
+                }
+            }
+                '''
+
+        expected = {'allCustomers': [
+            {'id': '200', 'phone': '+7(800)-000-00-00',
+             'firstName': 'Jerry', 'lastName': 'Smith'},
+            {'id': '201', 'phone': '+7(801)-000-00-00',
+             'firstName': 'Frank', 'lastName': 'Berry'}]}
+
+        executed = execute_query(query, self.user)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_customer_by_phone_query(self):
+        query = '''
+            query {
+                customerByPhone(phone:"+7(800)-000-00-00") {
+                    id
+                    phone
+                    firstName
+                    lastName
+                }
+            }
+                '''
+
+        expected = {'customerByPhone': {
+            'id': '200',
+            'phone': '+7(800)-000-00-00',
+            'firstName': 'Jerry',
+            'lastName': 'Smith'}}
+
+        executed = execute_query(query, self.user)
+        data = executed.get('data')
+        print('')
+        print(data)
+        self.assertEqual(data, expected)
+
+    def test_customer_by_phone_query(self):
+        query = '''
+            query {
+                customerByPhone(phone:"+7(800)-000-00-00") {
+                    id
+                    phone
+                    firstName
+                    lastName
+                }
+            }
+                '''
+
+        expected = {'customerByPhone': {
+            'id': '200',
+            'phone': '+7(800)-000-00-00',
+            'firstName': 'Jerry',
+            'lastName': 'Smith'}}
+
+        executed = execute_query(query, self.user)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_my_requests_query(self):
+        query = '''
+            query {
+                myRequests {
+                    id
+                    description
+                    category
+                    status
+                }
+            }
+                '''
+
+        expected = {'myRequests': [
+            {'id': '300',
+             'description': 'Broken phone.',
+             'category': 'DIAGNOSIS',
+             'status': 'ACCEPTED'}]}
+
+        executed = execute_query(query, self.user)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
     def test_all_requests_query(self):
         query = '''
-                query {
-                    allRequests {
-                        id
-                        status
-                        category
-                    }
+            query {
+                allRequests {
+                    id
+                    description
+                    category
+                    status
                 }
+            }
                 '''
 
         expected = {'allRequests': [
-            {'id': '104', 'status': 'OPEN', 'category': 'REPAIR'},
-            {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}
-        ]}
+            {'id': '300', 'description': 'Broken phone.',
+             'category': 'DIAGNOSIS', 'status': 'ACCEPTED'}, {
+                'id': '301', 'description': 'Broken phone.',
+                'category': 'CONSULTING', 'status': 'CLOSED'}]}
 
-        executed = execute_query(query, self.superuser)
+        executed = execute_query(query, self.user)
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    @skip('test')
-    def test_all_requests_filter_status_and_category(self):
+    def test_request_by_id_query(self):
         query = '''
-                query {
-                    allRequestsFilterStatusAndCategory (status:OPEN, category:REPAIR) {
+            query {
+                requestById(id:300) {
+                    id
+                    status
+                    customer {
                         id
-                        status
-                        category
+                    }
+                    employee {
+                        id
                     }
                 }
+            }
                 '''
 
-        expected = {'allRequestsFilterStatusAndCategory': [
-            {'id': '104', 'status': 'OPEN', 'category': 'REPAIR'}]}
+        expected = {'requestById': {'id': '300', 'status': 'ACCEPTED',
+                                    'customer': {'id': '200'},
+                                    'employee': {'id': '100'}}}
 
-        executed = execute_query(query, self.staff2)
+        executed = execute_query(query, self.user)
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    @skip('test')
-    def test_my_requests_filter_status_and_category(self):
+    def test_request_by_customer_query(self):
         query = '''
-                query {
-                    myRequestsFilterStatusAndCategory (status:CANCELED, category:CONSULTING) {
-                        id
-                        status
-                        category
+            query {
+                requestByCustomer(customerPhone:"+7(801)-000-00-00") {
+                    id
+                    status
+                    customer {
+                        phone
+                    }
+                    employee {
+                        email
                     }
                 }
+            }
                 '''
 
-        expected = {'myRequestsFilterStatusAndCategory': [
-            {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}]}
+        expected = {'requestByCustomer': [
+            {'id': '301', 'status': 'CLOSED',
+             'customer': {'phone': '+7(801)-000-00-00'},
+             'employee': {'email': 'user2@test.com'}}]}
 
-        executed = execute_query(query, self.staff2)
+        executed = execute_query(query, self.user2)
         data = executed.get('data')
-        self.assertEqual(data, expected)
-
-    @skip('test')
-    def test_all_requests_filter_status_or_category(self):
-        query = '''
-                query {
-                    allRequestsFilterStatusOrCategory (status:OPEN, category:CONSULTING) {
-                        id
-                        status
-                        category
-                    }
-                }
-                '''
-
-        expected = {'allRequestsFilterStatusOrCategory': [
-            {'id': '104', 'status': 'OPEN', 'category': 'REPAIR'},
-            {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}
-        ]}
-
-        executed = execute_query(query, self.staff2)
-        data = executed.get('data')
-        self.assertEqual(data, expected)
-
-    @skip('test')
-    def test_my_requests_filter_status_or_category(self):
-        query = '''
-                query {
-                    myRequestsFilterStatusOrCategory (status:OPEN, category:CONSULTING) {
-                        id
-                        status
-                        category
-                    }
-                }
-                '''
-
-        expected = {'myRequestsFilterStatusOrCategory': [
-            {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}]}
-
-        executed = execute_query(query, self.staff2)
-        data = executed.get('data')
-        self.assertEqual(data, expected)
-
-    @skip('test')
-    def test_all_requests_filter_data(self):
-        date = self.request1.created_at
-        query = f'query {{ allRequestsFilterDate (date:"{date}") {{ id status category }} }}'
-
-        expected = {'allRequestsFilterDate': [
-            {'id': '104', 'status': 'OPEN', 'category': 'REPAIR'},
-            {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}
-        ]}
-
-        executed = execute_query(query, self.staff2)
-        data = executed.get('data')
-        self.assertEqual(data, expected)
-
-    @skip('test')
-    def test_my_requests_filter_data(self):
-        date = self.request1.created_at
-        query = f'query {{ myRequestsFilterDate (date:"{date}") {{ id status category }} }}'
-
-        expected = {'myRequestsFilterDate': [
-            {'id': '105', 'status': 'CANCELED', 'category': 'CONSULTING'}]}
-
-        executed = execute_query(query, self.staff2)
-        data = executed.get('data')
+        print('')
+        print(data)
         self.assertEqual(data, expected)

@@ -104,6 +104,4 @@ class MutationTest(TestCase):
 
         executed = execute_query(query, self.user1)
         data = executed.get('data')
-        print('')
-        print(data)
         self.assertEqual(data, expected)
