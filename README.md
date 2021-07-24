@@ -1,5 +1,7 @@
 # CRM для регистрации и обработки входящих заявок от клиентов
 
+[Нажмите, чтобы перейти на сервис](https://domclick.srezanova.me/graphql/)
+
 ## Пользователи
 
 Пользователями сервиса являются сотрудники компании.
@@ -10,11 +12,11 @@
 
 Необходимые поля для регистрации: почта и пароль.
 
-![Register](img/register.png)
+![register](img/register.png)
 
 Для входа на сервис используется JWT Token. Получаем его через **login Mutation**.
 
-![Login](img/login.png)
+![login](img/login.png)
 
 Пользователь может поменять свою почту с помощью **updateUser Mutation**
 
@@ -36,21 +38,19 @@
 
 3. Имя
 
-4. Фамилия
-
 ### Получение данных о клиенте
 
-Пользовать может получить данные о клиенте и его заявках по ID или номеру телефона с помощью **customerById Query** или **customerByPhone Query**.
+Пользовать может получить данные по всем клиентам **allCustomers Query** и по определенному клиенту по ID **customerById Query**.
 
 ![customerById](img/customerById.png)
 
-![customerByPhone](img/customerByPhone.png)
+![allCustomers](img/allCustomers.png)
 
 ### Создание карточки клиента
 
 Пользователь создает карточку клиента с помощью **createCustomer mutation**.
 
-Обязательное поле при создании - номер телефона.
+Поле номер телефона уникальное.
 
 ![createCustomer](img/createCustomer.png)
 
@@ -58,7 +58,7 @@
 
 Пользователь может изменить карточку клиента с помощью **updateCustomer mutation**.
 
-Для изменения данных необходимо знать только номер телефона клиента.
+Для изменения данных необходимо ввести номер телефона клиента.
 
 Если у клиента поменялся номер телефона - создать новую карточку.
 
@@ -78,7 +78,7 @@
 
 1. Номер заявки
 
-2. Дата заявки
+2. Дата создания
 
 3. Клиент
 
@@ -89,59 +89,50 @@
    - Консультация
    - Диагностика
    - Ремонт
-   - Замена
-   - Возврат
+   - Прочее
 
 6. Статус заявки:
 
-   - Принята в работу
-   - У мастера
-   - Готово к выдаче
-   - Закрыта
+   - Принято
+   - В работе
+   - Готово
+   - Закрыто
 
 7. Дополнительная информация (описание неисправности, результат консультации и т.д.)
 
 ### Получение данных о заявках
 
-Пользователь может получить информацию по всем своим заявкам с помощью **myRequests Query**.
+Доступ ко всем заявкам компании осуществляется через **allRequests Query**
 
-![myRequests](img/myRequests.png)
+#### Фильтры
 
-Доступ ко всем заявкам компании возможен через **allRequests Query**
+- по клиентам(по номеру телефона)
 
-![allRequests](img/allRequests.png)
+- по статусам (одному или нескольким)
 
-Определенный запрос можно получить по ID или номеру телефона клиента с помощью **requestById Query** и **requestByCustomer Query**.
+- по категориям
+
+- по дате создания заявки
+
+- по интервалу дат
+
+![allRequestsNoFilters](img/allRequestsNoFilters.png)
+
+![allRequestsFilters](img/allRequestsFilters.png)
+
+![allRequestsFiltersDate](img/allRequestsFiltersDate.png)
+
+Запрос заявки по ID через **requestById Query**.
 
 ![requestById](img/requestById.png)
-
-![requestByCustomer](img/requestByCustomer.png)
-
-### Фильтрация заявок
-
-Сотрудники могут фильтровать заявки:
-
-- по типу заявки с помощью **requestsFilterCategory Query**.
-
-![requestsFilterCategory](img/requestsFilterCategory.png)
-
-- по одному или нескольким статусам с помощью **requestsFilterStatus Query**.
-
-![requestsFilterStatus1](img/requestsFilterStatus1.png)
-
-![requestsFilterStatus2](img/requestsFilterStatus2.png)
-
-- по дате или интервалу дат с помощью **requestsFilterDate Query**.
-
-![requestsFilterDate](img/requestsFilterDate.png)
-
-![requestsFilterDate_range](img/requestsFilterDate_range.png)
 
 ### Создание заявок
 
 Пользователь создает заявки с помощью **createRequest Mutation**.
 
-Клиент заполняется по полю номер телефона. Данные пользователя автоматически заполняются по данным входа.
+Клиент заполняется по полю номер телефона. Если такого клиента не существует в базе - создается новая карточка.
+
+Данные пользователя как ответственного сотрудника по заявке автоматически заполняются по данным входа.
 
 ![createRequest](img/createRequest.png)
 
@@ -158,3 +149,17 @@
 Удалить заявку можно по ее ID с помощью **deleteRequest Mutation**.
 
 ![deleteRequest](img/deleteRequest.png)
+
+## Работа сайта (частичный функционал для отображения возможностей сервиса)
+
+На [домашней странице](https://domclick.srezanova.me/) отображены все заявки с фильтрами.
+
+![home](img/home.png)
+
+Можем создать заявку:
+
+![new-request](img/new-request.png)
+
+Отредактировать и удалить ее:
+
+![edit](img/new-edit.png)
