@@ -33,7 +33,7 @@ export function RequestsList({ data, values, onFilterChange }: RequestsListProps
 
   return (
     <div className={classes.wrapper}>
-      <Container>
+      <Container size="xl">
         <Group position="apart" className={classes.header}>
           <Title>Все заявки</Title>
           <Button component={Link} to="/requests/new/">Создать заявку</Button>
