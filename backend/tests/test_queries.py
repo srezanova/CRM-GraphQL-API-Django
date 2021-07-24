@@ -41,15 +41,13 @@ class QueryTest(TestCase):
         self.customer = Customer.objects.create(
             id=200,
             phone='+7(800)-000-00-00',
-            first_name='Jerry',
-            last_name='Smith',
+            name='Jerry',
         )
 
         self.customer2 = Customer.objects.create(
             id=201,
             phone='+7(801)-000-00-00',
-            first_name='Frank',
-            last_name='Berry',
+            name='Frank',
         )
 
         self.request = Request.objects.create(
@@ -102,8 +100,7 @@ class QueryTest(TestCase):
                 customerById(id:200) {
                     id
                     phone
-                    firstName
-                    lastName
+                    name
                 }
             }
                 '''
@@ -111,8 +108,7 @@ class QueryTest(TestCase):
         expected = {'customerById': {
             'id': '200',
             'phone': '+7(800)-000-00-00',
-            'firstName': 'Jerry',
-            'lastName': 'Smith'}}
+            'name': 'Jerry', }}
 
         executed = execute_query(query, self.user)
         data = executed.get('data')
@@ -124,17 +120,16 @@ class QueryTest(TestCase):
                 allCustomers {
                     id
                     phone
-                    firstName
-                    lastName
+                    name
                 }
             }
                 '''
 
         expected = {'allCustomers': [
             {'id': '200', 'phone': '+7(800)-000-00-00',
-             'firstName': 'Jerry', 'lastName': 'Smith'},
+             'name': 'Jerry'},
             {'id': '201', 'phone': '+7(801)-000-00-00',
-             'firstName': 'Frank', 'lastName': 'Berry'}]}
+             'name': 'Frank'}]}
 
         executed = execute_query(query, self.user)
         data = executed.get('data')
@@ -146,8 +141,7 @@ class QueryTest(TestCase):
                 customerByPhone(phone:"+7(800)-000-00-00") {
                     id
                     phone
-                    firstName
-                    lastName
+                    name
                 }
             }
                 '''
@@ -155,8 +149,7 @@ class QueryTest(TestCase):
         expected = {'customerByPhone': {
             'id': '200',
             'phone': '+7(800)-000-00-00',
-            'firstName': 'Jerry',
-            'lastName': 'Smith'}}
+            'name': 'Jerry'}}
 
         executed = execute_query(query, self.user)
         data = executed.get('data')
@@ -170,8 +163,7 @@ class QueryTest(TestCase):
                 customerByPhone(phone:"+7(800)-000-00-00") {
                     id
                     phone
-                    firstName
-                    lastName
+                    name
                 }
             }
                 '''
@@ -179,8 +171,7 @@ class QueryTest(TestCase):
         expected = {'customerByPhone': {
             'id': '200',
             'phone': '+7(800)-000-00-00',
-            'firstName': 'Jerry',
-            'lastName': 'Smith'}}
+            'name': 'Jerry'}}
 
         executed = execute_query(query, self.user)
         data = executed.get('data')

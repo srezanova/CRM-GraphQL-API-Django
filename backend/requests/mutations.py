@@ -25,8 +25,7 @@ class CustomerInput(graphene.InputObjectType):
     '''
     id = graphene.ID()
     phone = graphene.String(required=True)
-    first_name = graphene.String()
-    last_name = graphene.String()
+    name = graphene.String()
 
 
 class CreateRequest(graphene.Mutation):
@@ -120,8 +119,7 @@ class CreateCustomer(graphene.Mutation):
 
         customer = Customer(
             phone=customer_data.phone,
-            first_name=customer_data.first_name,
-            last_name=customer_data.last_name,
+            name=customer_data.name,
         )
 
         customer.save()
@@ -143,10 +141,8 @@ class UpdateCustomer(graphene.Mutation):
             raise GraphQLError('You need to be logged in.')
 
         customer = Customer.objects.get(phone=customer_data.phone)
-        if customer_data.first_name is not None:
-            customer.first_name = customer_data.first_name
-        if customer_data.last_name is not None:
-            customer.last_name = customer_data.last_name
+        if customer_data.name is not None:
+            customer.name = customer_data.name
 
         customer.save()
         return UpdateCustomer(customer=customer)

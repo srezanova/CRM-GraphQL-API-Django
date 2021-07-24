@@ -5,8 +5,7 @@ from users.models import User
 class Customer(models.Model):
     phone = models.CharField(null=True, blank=False,
                              unique=True, max_length=20)
-    first_name = models.CharField(null=True, blank=True, max_length=20)
-    last_name = models.CharField(null=True, blank=True, max_length=20)
+    name = models.CharField(null=True, blank=True, max_length=20)
 
 
 class Request(models.Model):

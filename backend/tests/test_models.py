@@ -59,8 +59,7 @@ class RequestModelTest(TestCase):
 
         self.customer = Customer.objects.create(
             phone='89170009900',
-            first_name='Ann',
-            last_name='Sparrow'
+            name='Ann',
         )
 
         self.request = Request.objects.create(
@@ -74,6 +73,7 @@ class RequestModelTest(TestCase):
     def test_request_detail(self):
         self.assertEqual(self.request.customer, self.customer)
         self.assertEqual(self.request.customer.phone, '89170009900')
+        self.assertEqual(self.request.customer.name, 'Ann')
         self.assertEqual(self.request.employee, self.employee)
         self.assertEqual(self.request.employee.email, 'employee@test.com')
         self.assertEqual(self.request.category, 'REPAIR')

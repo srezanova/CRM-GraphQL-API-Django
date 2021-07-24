@@ -43,8 +43,7 @@ class MutationTest(TestCase):
         self.customer = Customer.objects.create(
             id=200,
             phone='+7(800)-000-00-00',
-            first_name='Jerry',
-            last_name='Smith',
+            name='Jerry',
         )
 
         self.customer2 = Customer.objects.create(
@@ -184,12 +183,10 @@ class MutationTest(TestCase):
             mutation {
                 createCustomer(customerData:
                 {phone:"+7(700)-000-00-00",
-                firstName:"Chelsey",
-                lastName:"Garrett"}) {
+                name:"Chelsey"}) {
                     customer {
                         phone
-                        firstName
-                        lastName
+                        name
                     }
                 }
             }
@@ -197,8 +194,7 @@ class MutationTest(TestCase):
 
         expected = OrderedDict([('createCustomer',
                                  {'customer': {'phone': '+7(700)-000-00-00',
-                                               'firstName': 'Chelsey',
-                                               'lastName': 'Garrett'}})])
+                                               'name': 'Chelsey'}})])
 
         executed = execute_query(query, self.user)
         data = executed.get('data')
@@ -209,17 +205,17 @@ class MutationTest(TestCase):
             mutation {
                 updateCustomer(customerData:
                 {phone:"+7(801)-000-00-00",
-                firstName:"Frank"}) {
+                name:"Frank"}) {
                     customer {
                         phone
-                        firstName
+                        name
                     }
                 }
             }
                 '''
 
         expected = OrderedDict([('updateCustomer', {'customer': {
-                               'phone': '+7(801)-000-00-00', 'firstName': 'Frank'}})])
+                               'phone': '+7(801)-000-00-00', 'name': 'Frank'}})])
 
         executed = execute_query(query, self.user)
         data = executed.get('data')
