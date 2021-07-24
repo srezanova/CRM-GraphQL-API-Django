@@ -10,7 +10,6 @@ import users.schema
 class AuthMutation(graphene.ObjectType):
     register = mutations.Register.Field()
     login = mutations.ObtainJSONWebToken.Field()
-    refresh_token = mutations.RefreshToken.Field()
 
 
 class Query(users.schema.Query, requests.schema.Query, graphene.ObjectType):

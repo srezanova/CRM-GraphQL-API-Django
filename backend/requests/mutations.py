@@ -41,7 +41,11 @@ class CreateRequest(graphene.Mutation):
         if user.is_anonymous:
             raise GraphQLError('You need to be logged in.')
 
-        customer = Customer.objects.get(phone=request_data.customer_phone)
+        try:
+            customer = Customer.objects.get(phone=request_data.customer_phone)
+        except Customer.DoesNotExist:
+            customer = Customer(phone=request_data.customer_phone)
+            customer.save()
 
         request = Request(
             description=request_data.description,
