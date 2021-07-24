@@ -9,14 +9,14 @@ const requestsQuery = gql`
       createdAt
       category
       status
-      problem
-      solution
-      product
-      contacts
-      employee {
-        email
+      description
+      customer {
+        id
+        phone
+        name
       }
-      client {
+      employee {
+        id
         email
       }
     }

@@ -1,12 +1,11 @@
 import { Badge } from '@mantine/core';
-
-export type Category = 'CONSULTING' | 'DIAGNOSIS' | 'REPAIR' | 'REPLACEMENT' | 'RETURN' | 'COMPLAINT' | 'OTHER';
+import type { Category } from '../../types';
 
 interface CategoryBadgeProps {
   category: Category;
 }
 
-const data: Record<Category, { color: string; name: string }> = {
+export const data: Record<Category, { color: string; name: string }> = {
   CONSULTING: {
     name: 'Консультация',
     color: 'grape',
@@ -20,21 +19,6 @@ const data: Record<Category, { color: string; name: string }> = {
   REPAIR: {
     name: 'Ремонт',
     color: 'blue',
-  },
-
-  REPLACEMENT: {
-    name: 'Замена',
-    color: 'red',
-  },
-
-  RETURN: {
-    name: 'Возврат',
-    color: 'violet',
-  },
-
-  COMPLAINT: {
-    name: 'Жалоба',
-    color: 'cyan',
   },
 
   OTHER: {

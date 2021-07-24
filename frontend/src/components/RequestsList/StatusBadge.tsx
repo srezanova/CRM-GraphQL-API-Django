@@ -1,29 +1,28 @@
 import { Badge } from '@mantine/core';
-
-export type Status = 'OPEN' | 'SCHEDULED' | 'CANCELED' | 'CLOSED';
+import type { Status } from '../../types';
 
 interface StatusBadgeProps {
   status: Status;
 }
 
-const data: Record<Status, { color: string; name: string }> = {
-  OPEN: {
-    name: 'Открыта',
+export const data: Record<Status, { color: string; name: string }> = {
+  ACCEPTED: {
+    name: 'Принято',
     color: 'teal',
   },
 
-  SCHEDULED: {
-    name: 'Запланирована',
+  IN_PROGRESS: {
+    name: 'В работе',
     color: 'indigo',
   },
 
-  CANCELED: {
-    name: 'Отменена',
+  READY: {
+    name: 'Готово',
     color: 'red',
   },
 
   CLOSED: {
-    name: 'Закрыта',
+    name: 'Закрыто',
     color: 'gray',
   },
 };

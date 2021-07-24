@@ -1,23 +1,11 @@
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
 import { Pencil2Icon } from '@modulz/radix-icons';
-import { Paper, Table, Title, Container, Group, Button, ActionIcon } from '@mantine/core';
-import { StatusBadge, Status } from './StatusBadge';
-import { CategoryBadge, Category } from './CategoryBadge';
+import { Paper, Table, Title, Container, Group, Button, ActionIcon, Text } from '@mantine/core';
+import { StatusBadge } from './StatusBadge';
+import { CategoryBadge } from './CategoryBadge';
+import type { Request } from '../../types';
 import useStyles from './RequestsList.styles';
-
-export interface Request {
-  category: Category;
-  contracts: string;
-  createdAt: string;
-  client: { email: string };
-  employee: { email: string };
-  id: string;
-  problem: string;
-  solution: string;
-  status: Status;
-  product: string;
-}
 
 interface RequestsListProps {
   data: Request[];
@@ -29,7 +17,7 @@ export function RequestsList({ data }: RequestsListProps) {
   const rows = data.map(item => (
     <tr key={item.id}>
       <td>{item.id}</td>
-      <td>{item.product}</td>
+      <td><Text size="xs">{item.description}</Text></td>
       <td>{dayjs(item.createdAt).locale('ru').format('DD MMMM YYYY')}</td>
       <td><StatusBadge status={item.status} /></td>
       <td><CategoryBadge category={item.category} /></td>
@@ -54,7 +42,7 @@ export function RequestsList({ data }: RequestsListProps) {
             <thead>
               <tr>
                 <th>Номер заявки</th>
-                <th>Устройство</th>
+                <th>Описание</th>
                 <th>Дата создания</th>
                 <th>Статус</th>
                 <th>Категория</th>

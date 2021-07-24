@@ -24,7 +24,7 @@ export function LoginForm({ onSubmit, loading, error }: LoginFormProps) {
   });
 
   const onFill = () => {
-    form.setValues({ email: 'employee@email.com', password: 'testpassword' });
+    form.setValues({ email: 'user1@email.com', password: 'testpassword' });
   };
 
   const handleSubmit = (_values: any) => {
