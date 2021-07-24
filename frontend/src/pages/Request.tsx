@@ -3,7 +3,7 @@ import { LoadingOverlay } from '@mantine/core';
 import { useParams } from 'react-router-dom';
 import { Request } from '../components/Request/Request';
 
-const requestQuery = gql`
+export const requestQuery = gql`
   query requestQuery($id: ID!) {
     requestById(id: $id) {
       id

@@ -95,7 +95,7 @@ export function RequestForm({ title, initialValues, onSubmit }: RequestFormProps
           />
 
           <Group position="right">
-            <Button type="submit">Создать заявку</Button>
+            <Button type="submit">{title}</Button>
           </Group>
         </form>
       </Paper>
