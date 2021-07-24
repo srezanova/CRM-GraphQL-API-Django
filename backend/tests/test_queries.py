@@ -61,7 +61,7 @@ class QueryTest(TestCase):
             customer=self.customer,
         )
 
-        self.request = Request.objects.create(
+        self.request2 = Request.objects.create(
             id=301,
             employee=self.user2,
             category='CONSULTING',
@@ -73,7 +73,9 @@ class QueryTest(TestCase):
     def tearDown(self):
         self.user.delete()
         self.customer.delete()
+        self.customer2.delete()
         self.request.delete()
+        self.request2.delete()
 
     def test_me_query(self):
         query = '''
@@ -275,6 +277,4 @@ class QueryTest(TestCase):
 
         executed = execute_query(query, self.user2)
         data = executed.get('data')
-        print('')
-        print(data)
         self.assertEqual(data, expected)

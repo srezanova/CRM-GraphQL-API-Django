@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from django.test import RequestFactory, TestCase
 from unittest import skip
 from graphql import GraphQLError
@@ -39,8 +40,43 @@ class MutationTest(TestCase):
             password='testpassword',
         )
 
+        self.customer = Customer.objects.create(
+            id=200,
+            phone='+7(800)-000-00-00',
+            first_name='Jerry',
+            last_name='Smith',
+        )
+
+        self.customer2 = Customer.objects.create(
+            id=201,
+            phone='+7(801)-000-00-00',
+        )
+
+        self.request = Request.objects.create(
+            id=300,
+            employee=self.user,
+            category='DIAGNOSIS',
+            status='ACCEPTED',
+            description='Broken phone.',
+            customer=self.customer,
+        )
+
+        self.request2 = Request.objects.create(
+            id=301,
+            employee=self.user1,
+            category='CONSULTING',
+            status='CLOSED',
+            description='Broken phone.',
+            customer=self.customer2,
+        )
+
     def tearDown(self):
         self.user.delete()
+        self.user1.delete()
+        self.customer.delete()
+        self.customer2.delete()
+        self.request.delete()
+        self.request2.delete()
 
     def test_update_user_mutation(self):
         query = '''
@@ -77,8 +113,8 @@ class MutationTest(TestCase):
                 '''
 
         expected = {
-            "register": {
-                "success": True
+            'register': {
+                'success': True
             }
         }
 
@@ -97,11 +133,150 @@ class MutationTest(TestCase):
                 '''
 
         expected = {
-            "login": {
-                "success": True
+            'login': {
+                'success': True
             }
         }
 
         executed = execute_query(query, self.user1)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_create_request_mutation(self):
+        query = '''
+            mutation {
+                createRequest (requestData:
+                    {status:READY,
+                    description:"Broken phone.",
+                    customerPhone:"+7(800)-000-00-00",
+                    category:REPAIR,
+                    },
+                    ) {
+                        request{
+                        customer {
+                            phone
+                        }
+                        employee {
+                            email
+                        }
+                        status
+                        description
+                        category
+                        }
+                }
+                }
+                '''
+
+        expected = OrderedDict([('createRequest',
+                                 {'request':
+                                  {'customer': {'phone': '+7(800)-000-00-00'},
+                                   'employee': {'email': 'user@test.com'},
+                                      'status': 'READY',
+                                      'description': 'Broken phone.',
+                                      'category': 'REPAIR'}})])
+
+        executed = execute_query(query, self.user)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_create_customer_mutation(self):
+        query = '''
+            mutation {
+                createCustomer(customerData:
+                {phone:"+7(700)-000-00-00",
+                firstName:"Chelsey",
+                lastName:"Garrett"}) {
+                    customer {
+                        phone
+                        firstName
+                        lastName
+                    }
+                }
+            }
+                '''
+
+        expected = OrderedDict([('createCustomer',
+                                 {'customer': {'phone': '+7(700)-000-00-00',
+                                               'firstName': 'Chelsey',
+                                               'lastName': 'Garrett'}})])
+
+        executed = execute_query(query, self.user)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_update_customer_mutation(self):
+        query = '''
+            mutation {
+                updateCustomer(customerData:
+                {phone:"+7(801)-000-00-00",
+                firstName:"Frank"}) {
+                    customer {
+                        phone
+                        firstName
+                    }
+                }
+            }
+                '''
+
+        expected = OrderedDict([('updateCustomer', {'customer': {
+                               'phone': '+7(801)-000-00-00', 'firstName': 'Frank'}})])
+
+        executed = execute_query(query, self.user)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_delete_customer_mutation(self):
+        query = '''
+                mutation {
+                    deleteCustomer(phone:"+7(801)-000-00-00") {
+                        phone
+                    }
+                }
+                '''
+
+        expected = OrderedDict(
+            [('deleteCustomer', {'phone': '+7(801)-000-00-00'})])
+
+        executed = execute_query(query, self.user)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_update_request_mutation(self):
+        query = '''
+            mutation {
+                updateRequest(requestData:{
+                    id:300,
+                    status:ACCEPTED
+                }) {
+                    request {
+                        description
+                        category
+                        status
+                    }
+                }
+            }
+                '''
+
+        expected = OrderedDict([('updateRequest', {'request': {
+                               'description': 'Broken phone.',
+                               'category': 'DIAGNOSIS',
+                               'status': 'ACCEPTED'}})])
+
+        executed = execute_query(query, self.user)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_delete_request_mutation(self):
+        query = '''
+                mutation {
+                    deleteRequest(id:301) {
+                        id
+                    }
+                }
+                '''
+
+        expected = OrderedDict([('deleteRequest', {'id': '301'})])
+
+        executed = execute_query(query, self.user)
         data = executed.get('data')
         self.assertEqual(data, expected)

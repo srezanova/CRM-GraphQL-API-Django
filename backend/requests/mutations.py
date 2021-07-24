@@ -174,9 +174,9 @@ class DeleteCustomer(graphene.Mutation):
 
 
 class Mutation(graphene.ObjectType):
-    create_request = CreateRequest.Field()
     create_customer = CreateCustomer.Field()
+    create_request = CreateRequest.Field()
     update_customer = UpdateCustomer.Field()
-    delete_customer = DeleteCustomer.Field()
     update_request = UpdateRequest.Field()
+    delete_customer = DeleteCustomer.Field()
     delete_request = DeleteRequest.Field()
