@@ -1478,10 +1478,10 @@
     react-textarea-autosize "^8.3.2"
     react-transition-group "^4.4.2"
 
-"@mantine/dates@^2.0.7":
-  version "2.0.7"
-  resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-2.0.7.tgz#2528b166d2ec65c0dcf593e72fb3798c098675ae"
-  integrity sha512-19mxyPo6hjWn+GrLO0k+lCBbpYTXaLqmlCqW4Uzlm+gA2Fwd3ei9L4W79H+1cg/GfHgdmI+WLxgRR4F+/UqTUw==
+"@mantine/dates@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-2.1.1.tgz#390c4052aab63aa38375760ced3c402c8ad6fc2d"
+  integrity sha512-I9mfc2JS0WsQFTii2pXYC/oque2KlLcPQjG1r3z43XqlZkd0sSzaneX7yz30o3/ZpnGw7fNkMZYJey4ZXlk8vQ==
   dependencies:
     clsx "^1.1.1"
 
