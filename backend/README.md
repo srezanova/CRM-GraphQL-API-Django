@@ -121,29 +121,21 @@
 
 Сотрудники могут фильтровать заявки:
 
-- по статусам и категориям с помощью **allRequestsFilterStatusAndCategory Query** или **myRequestsFilterStatusAndCategory Query**.
+- по типу заявки с помощью **requestsFilterCategory Query**.
 
-![allRequestsFilterStatusAndCategory](img/allRequestsFilterStatusAndCategory.png)
+![requestsFilterCategory](img/requestsFilterCategory.png)
 
-![myRequestsFilterStatusAndCategory](img/myRequestsFilterStatusAndCategory.png)
+- по одному или нескольким статусам с помощью **requestsFilterStatus Query**.
 
-- по статусам или категориям с помощью **allRequestsFilterStatusOrCategory Query** или **myRequestsFilterStatusOrCategory Query**.
+![requestsFilterStatus1](img/requestsFilterStatus1.png)
 
-![allRequestsFilterStatusOrCategory_category](img/allRequestsFilterStatusOrCategory_category.png)
+![requestsFilterStatus2](img/requestsFilterStatus2.png)
 
-![allRequestsFilterStatusOrCategory_status](img/allRequestsFilterStatusOrCategory_status.png)
+- по дате или интервалу дат с помощью **requestsFilterDate Query**.
 
-![myRequestsFilterStatusOrCategory](img/myRequestsFilterStatusOrCategory.png)
+![requestsFilterDate](img/requestsFilterDate.png)
 
-- по дате или интервалу дат с помощью **allRequestsFilterDate Query** или **myRequestsFilterDate Query**.
-
-![allRequestsFilterDate](img/allRequestsFilterDate.png)
-
-![allRequestsFilterDate_range](img/allRequestsFilterDate_range.png)
-
-![myRequestsFilterDate](img/myRequestsFilterDate.png)
-
-![myRequestsFilterDate_range](img/myRequestsFilterDate_range.png)
+![requestsFilterDate_range](img/requestsFilterDate_range.png)
 
 ### Создание заявок
 

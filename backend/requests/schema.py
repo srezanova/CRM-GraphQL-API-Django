@@ -20,7 +20,7 @@ class CategoryEnum(graphene.Enum):
     CONSULTING = 'CONSULTING'
     DIAGNOSIS = 'DIAGNOSIS'
     REPAIR = 'REPAIR'
-    RETURN = 'RETURN'
+    OTHER = 'OTHER'
 
 
 class RequestType(DjangoObjectType):
@@ -53,18 +53,13 @@ class Query(graphene.ObjectType):
     customer_by_phone = graphene.Field(
         CustomerType, phone=graphene.String(required=True))
 
-    # all_requests_filter_status_and_category = graphene.List(
-    #     RequestType, status=StatusEnum(), category=CategoryEnum())
-    # my_requests_filter_status_and_category = graphene.List(
-    #     RequestType, status=StatusEnum(), category=CategoryEnum())
-    # all_requests_filter_status_or_category = graphene.List(
-    #     RequestType, status=StatusEnum(), category=CategoryEnum())
-    # my_requests_filter_status_or_category = graphene.List(
-    #     RequestType, status=StatusEnum(), category=CategoryEnum())
-    # all_requests_filter_date = graphene.List(RequestType, date=graphene.String(
-    # ), date_start=graphene.String(), date_end=graphene.String())
-    # my_requests_filter_date = graphene.List(RequestType, date=graphene.String(
-    # ), date_start=graphene.String(), date_end=graphene.String())
+    # filters
+    requests_filter_category = graphene.List(
+        RequestType, category=CategoryEnum())
+    requests_filter_status = graphene.List(
+        RequestType, status1=StatusEnum(), status2=StatusEnum(), status3=StatusEnum())
+    requests_filter_date = graphene.List(
+        RequestType, date=graphene.String(), date_start=graphene.String(), date_end=graphene.String())
 
     def resolve_my_requests(self, info, **kwargs):
         '''Resolves user's own requests.'''
@@ -131,91 +126,31 @@ class Query(graphene.ObjectType):
 
         return Customer.objects.get(phone=phone)
 
-    # def resolve_all_requests_filter_status_and_category(self, info, status=None, category=None):
-    #     '''
-    #     Resolves all requests by status and category at the same time.
-    #     '''
-    #     user = info.context.user
+    def resolve_requests_filter_category(self, info, category):
+        '''Resolves requests filtered by category.'''
+        user = info.context.user
 
-    #     if user.is_anonymous:
-    #         raise GraphQLError('You need to be logged in.')
-    #     if user.is_staff:
-    #         return gql_optimizer.query(Request.objects.filter((Q(status=status) & Q(category=category))), info)
-    #     else:
-    #         raise GraphQLError('Not found.')
+        if user.is_anonymous:
+            raise GraphQLError('You need to be logged in.')
 
-    # def resolve_my_requests_filter_status_and_category(self, info, status=None, category=None):
-    #     '''
-    #     Resolves user's own requests by status and category at the same time.
-    #     '''
-    #     user = info.context.user
+        return gql_optimizer.query(Request.objects.filter(category=category), info)
 
-    #     if user.is_anonymous:
-    #         raise GraphQLError('You need to be logged in.')
-    #     if user.is_staff:
-    #         return gql_optimizer.query(Request.objects.filter((Q(status=status) & Q(category=category) & Q(employee=user))), info)
-    #     else:
-    #         raise GraphQLError('Not found.')
+    def resolve_requests_filter_status(self, info, status1=None, status2=None, status3=None):
+        '''Resolves requests by one status or more.'''
+        user = info.context.user
 
-    # def resolve_all_requests_filter_status_or_category(self, info, status=None, category=None):
-    #     '''
-    #     Resolves all requests by status or category
-    #     '''
-    #     user = info.context.user
+        if user.is_anonymous:
+            raise GraphQLError('You need to be logged in.')
 
-    #     if user.is_anonymous:
-    #         raise GraphQLError('You need to be logged in.')
-    #     if user.is_staff:
-    #         return gql_optimizer.query(Request.objects.filter(
-    #             (Q(status=status) | Q(category=category))
-    #         ), info)
-    #     else:
-    #         raise GraphQLError('Not found.')
+        return gql_optimizer.query(Request.objects.filter((Q(status=status1) | Q(status=status2) | Q(status=status3))), info)
 
-    # def resolve_my_requests_filter_status_or_category(self, info, status=None, category=None):
-    #     '''
-    #     Resolves user's own requests by status and category at the same time.
-    #     '''
-    #     user = info.context.user
+    def resolve_requests_filter_date(self, info, date=None, date_start=None, date_end=None):
+        '''Resolves all requests by date or date range.'''
+        user = info.context.user
 
-    #     if user.is_anonymous:
-    #         raise GraphQLError('You need to be logged in.')
-    #     if user.is_staff:
-    #         return gql_optimizer.query(Request.objects.filter(
-    #             ((Q(status=status) & Q(employee=user)) |
-    #              (Q(category=category) & Q(employee=user)))
-    #         ), info)
-    #     else:
-    #         raise GraphQLError('Not found.')
+        if user.is_anonymous:
+            raise GraphQLError('You need to be logged in.')
 
-    # def resolve_all_requests_filter_date(self, info, date=None, date_start=None, date_end=None):
-    #     '''
-    #     Resolves all requests by date.
-    #     '''
-    #     user = info.context.user
-
-    #     if user.is_anonymous:
-    #         raise GraphQLError('You need to be logged in.')
-    #     if user.is_staff:
-    #         return gql_optimizer.query(Request.objects.filter(
-    #             (Q(created_at=date) | Q(
-    #                 created_at__range=[date_start, date_end]))
-    #         ), info)
-    #     else:
-    #         raise GraphQLError('Not found.')
-
-    # def resolve_my_requests_filter_date(self, info, date=None, date_start=None, date_end=None):
-    #     '''
-    #     Resolves all requests by date.
-    #     '''
-    #     user = info.context.user
-
-    #     if user.is_anonymous:
-    #         raise GraphQLError('You need to be logged in.')
-    #     if user.is_staff:
-    #         return gql_optimizer.query(Request.objects.filter(
-    #             ((Q(created_at=date) & Q(employee=user)) | (
-    #                 Q(created_at__range=[date_start, date_end]) & Q(employee=user)))
-    #         ), info)
-    #     else:
-    #         raise GraphQLError('Not found.')
+        return gql_optimizer.query(Request.objects.filter(
+            (Q(created_at=date) | Q(created_at__range=[date_start, date_end]))
+        ), info)

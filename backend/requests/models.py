@@ -17,12 +17,12 @@ class Request(models.Model):
     CONSULTING = 'CONSULTING'
     DIAGNOSIS = 'DIAGNOSIS'
     REPAIR = 'REPAIR'
-    RETURN = 'RETURN'
+    OTHER = 'OTHER'
     CATEGORY_CHOICES = [
         (CONSULTING, 'CONSULTING'),
         (DIAGNOSIS, 'DIAGNOSIS'),
         (REPAIR, 'REPAIR'),
-        (RETURN, 'RETURN'),
+        (OTHER, 'OTHER'),
     ]
 
     ACCEPTED = 'ACCEPTED'
