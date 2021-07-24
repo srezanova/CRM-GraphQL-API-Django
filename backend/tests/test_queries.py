@@ -325,3 +325,18 @@ class QueryTest(TestCase):
         executed = execute_query(query, self.user)
         data = executed.get('data')
         self.assertEqual(data, expected)
+
+    def test_all_requests_query_not_found(self):
+        query = '''
+            query {
+                allRequests(customerPhone:"0") {
+                    id
+                }
+            }
+                '''
+
+        expected = {'allRequests': []}
+
+        executed = execute_query(query, self.user)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
