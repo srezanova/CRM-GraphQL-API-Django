@@ -1,22 +1,42 @@
+import { useMutation, gql } from '@apollo/client';
 import { Table, Text, Title, Container, Group, Button } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
 import type { Request as RequestType } from '../../types';
 import { CategoryBadge } from '../RequestsList/CategoryBadge';
 import { StatusBadge } from '../RequestsList/StatusBadge';
+import { requestsQuery } from '../../pages/Index';
+
+const deleteMutation = gql`
+  mutation deleteRequestMutation($id: ID!) {
+    deleteRequest(id: $id) {
+      id
+    }
+  }
+`;
 
 interface RequestProps {
   data: RequestType;
 }
 
 export function Request({ data }: RequestProps) {
+  const [mutate] = useMutation(deleteMutation);
+  const history = useHistory();
+
+  const handleDelete = () => {
+    mutate({ variables: { id: data.id }, refetchQueries: [{ query: requestsQuery }] }).then(() => history.replace('/'));
+  };
+
   return (
     <div style={{ marginTop: 100 }}>
       <Container>
-        <Group position="apart" style={{ marginBottom: 30 }}>
+        <div style={{ marginBottom: 30, display: 'flex', justifyContent: 'space-between' }}>
           <Title>Заявка</Title>
-          <Button component={Link} to={`/requests/${data.id}/edit`}>Редактировать</Button>
-        </Group>
+          <Group>
+            <Button color="red" onClick={handleDelete}>Удалить заявку</Button>
+            <Button component={Link} to={`/requests/${data.id}/edit`}>Редактировать</Button>
+          </Group>
+        </div>
 
         <Table>
           <tbody>

@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { RequestsList } from '../components/RequestsList/RequestsList';
 import type { RequestFiltersProps } from '../components/RequestsList/RequestFilters/RequestFilters';
 
-const requestsQuery = gql`
+export const requestsQuery = gql`
   query requests($customerPhone: String, $category: CategoryEnum, $createdAt: String, $dateStart: String, $dateEnd: String) {
     allRequests(customerPhone: $customerPhone, category: $category, createdAt: $createdAt, dateStart: $dateStart, dateEnd: $dateEnd) {
       id
