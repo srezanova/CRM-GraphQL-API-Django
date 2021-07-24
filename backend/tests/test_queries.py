@@ -278,3 +278,82 @@ class QueryTest(TestCase):
         executed = execute_query(query, self.user2)
         data = executed.get('data')
         self.assertEqual(data, expected)
+
+    def test_requests_filter_category(self):
+        query = '''
+            query {
+                requestsFilterCategory (category:DIAGNOSIS) {
+                    id
+                    category
+                    status
+                }
+            }
+                '''
+
+        expected = {'requestsFilterCategory': [
+            {'id': '300', 'category': 'DIAGNOSIS', 'status': 'ACCEPTED'}]}
+
+        executed = execute_query(query, self.user2)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_requests_filter_status(self):
+        query = '''
+            query {
+                requestsFilterStatus(status1:ACCEPTED) {
+                    id
+                    status
+                    category
+                }
+            }
+                '''
+
+        expected = {'requestsFilterStatus': [
+            {'id': '300', 'status': 'ACCEPTED', 'category': 'DIAGNOSIS'}]}
+
+        executed = execute_query(query, self.user2)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_requests_filter_status2(self):
+        query = '''
+            query {
+                requestsFilterStatus(status1:ACCEPTED, status2:CLOSED) {
+                    id
+                    status
+                    category
+                }
+            }
+                '''
+
+        expected = {'requestsFilterStatus': [
+            {'id': '300', 'status': 'ACCEPTED', 'category': 'DIAGNOSIS'}, {
+                'id': '301', 'status': 'CLOSED', 'category': 'CONSULTING'}]}
+
+        executed = execute_query(query, self.user2)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_requests_filter_date(self):
+        date = self.request.created_at
+        query = f'query {{ requestsFilterDate (date:"{date}") {{ id status category }} }}'
+
+        expected = {'requestsFilterDate': [
+            {'id': '300', 'status': 'ACCEPTED', 'category': 'DIAGNOSIS'}, {
+                'id': '301', 'status': 'CLOSED', 'category': 'CONSULTING'}]}
+
+        executed = execute_query(query, self.user2)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
+
+    def test_requests_filter_date_range(self):
+        date = self.request.created_at
+        query = f'query {{ requestsFilterDate (dateStart:"{date}", dateEnd:"{date}") {{ id status category }} }}'
+
+        expected = {'requestsFilterDate': [
+            {'id': '300', 'status': 'ACCEPTED', 'category': 'DIAGNOSIS'}, {
+                'id': '301', 'status': 'CLOSED', 'category': 'CONSULTING'}]}
+
+        executed = execute_query(query, self.user2)
+        data = executed.get('data')
+        self.assertEqual(data, expected)
