@@ -87,8 +87,8 @@ export function RequestForm({ title, initialValues, onSubmit }: RequestFormProps
           <Select
             className={classes.field}
             data={categories}
-            label="Категория"
-            placeholder="Категория"
+            label="Тип заявки"
+            placeholder="Тип заявки"
             value={form.values.category as string}
             onChange={value => form.setFieldValue('category', value as Category)}
             error={form.errors.category && 'Введите значение'}

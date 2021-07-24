@@ -36,7 +36,7 @@ export function RequestsList({ data, values, onFilterChange }: RequestsListProps
       <Container size="xl">
         <Group position="apart" className={classes.header}>
           <Title>Все заявки</Title>
-          <Button component={Link} to="/requests/new/">Создать заявку</Button>
+          <Button component={Link} to="/new-request/">Создать заявку</Button>
         </Group>
 
         <RequestFilters values={values} onFilterChange={onFilterChange} />
@@ -50,7 +50,7 @@ export function RequestsList({ data, values, onFilterChange }: RequestsListProps
                 <th>Клиент</th>
                 <th>Дата создания</th>
                 <th>Статус</th>
-                <th>Категория</th>
+                <th>Тип заявки</th>
                 <th />
               </tr>
             </thead>

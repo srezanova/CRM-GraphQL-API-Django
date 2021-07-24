@@ -14,7 +14,7 @@ export function App() {
           <Index />
         </Route>
 
-        <Route path="/requests/new/" exact>
+        <Route path="/new-request" exact>
           <NewRequest />
         </Route>
 

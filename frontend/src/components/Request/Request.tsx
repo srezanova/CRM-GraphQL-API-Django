@@ -57,11 +57,11 @@ export function Request({ data }: RequestProps) {
               <td>{data.customer.name}</td>
             </tr>
             <tr>
-              <td>Ответсвтенный сотрудник</td>
+              <td>Ответственный сотрудник</td>
               <td>{data.employee.email}</td>
             </tr>
             <tr>
-              <td>Категория</td>
+              <td>Тип заявки</td>
               <td><CategoryBadge category={data.category} /></td>
             </tr>
             <tr>
