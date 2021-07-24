@@ -20,7 +20,6 @@ class CategoryEnum(graphene.Enum):
     CONSULTING = 'CONSULTING'
     DIAGNOSIS = 'DIAGNOSIS'
     REPAIR = 'REPAIR'
-    REPLACEMENT = 'REPLACEMENT'
     RETURN = 'RETURN'
 
 
@@ -43,16 +42,16 @@ class Query(graphene.ObjectType):
     my_requests = graphene.List(RequestType)
     all_requests = graphene.List(RequestType)
     request_by_id = graphene.Field(
-        RequestType, request_id=graphene.ID(required=True))
+        RequestType, id=graphene.ID(required=True))
     request_by_customer = graphene.List(
         RequestType, customer_phone=graphene.ID(required=True))
 
     # customer queries
     all_customers = graphene.List(CustomerType)
     customer_by_id = graphene.Field(
-        CustomerType, customer_id=graphene.ID(required=True))
+        CustomerType, id=graphene.ID(required=True))
     customer_by_phone = graphene.Field(
-        CustomerType, customer_phone=graphene.String(required=True))
+        CustomerType, phone=graphene.String(required=True))
 
     # all_requests_filter_status_and_category = graphene.List(
     #     RequestType, status=StatusEnum(), category=CategoryEnum())
@@ -85,14 +84,14 @@ class Query(graphene.ObjectType):
 
         return gql_optimizer.query(Request.objects.all(), info)
 
-    def resolve_request_by_id(self, info, request_id):
+    def resolve_request_by_id(self, info, id):
         '''Resolves request by ID.'''
         user = info.context.user
 
         if user.is_anonymous:
             raise GraphQLError('You need to be logged in.')
 
-        return Request.objects.get(id=request_id)
+        return Request.objects.get(id=id)
 
     def resolve_request_by_customer(self, info, customer_phone):
         '''Resolves requests by customer phone.'''
@@ -105,7 +104,7 @@ class Query(graphene.ObjectType):
 
         return gql_optimizer.query(Request.objects.filter(customer=customer), info)
 
-    def resolve_all_customer(self, info, **kwargs):
+    def resolve_all_customers(self, info, **kwargs):
         '''Resolves all customers.'''
         user = info.context.user
 
@@ -114,23 +113,23 @@ class Query(graphene.ObjectType):
 
         return gql_optimizer.query(Customer.objects.all(), info)
 
-    def resolve_customer_by_id(self, info, customer_id):
+    def resolve_customer_by_id(self, info, id):
         '''Resolves customer by id.'''
         user = info.context.user
 
         if user.is_anonymous:
             raise GraphQLError('You need to be logged in.')
 
-        return Customer.objects.get(id=customer_id)
+        return Customer.objects.get(id=id)
 
-    def resolve_customer_by_id(self, info, customer_phone):
-        '''Resolves customer by id.'''
+    def resolve_customer_by_phone(self, info, phone):
+        '''Resolves customer by phone.'''
         user = info.context.user
 
         if user.is_anonymous:
             raise GraphQLError('You need to be logged in.')
 
-        return Customer.objects.get(phone=customer_phone)
+        return Customer.objects.get(phone=phone)
 
     # def resolve_all_requests_filter_status_and_category(self, info, status=None, category=None):
     #     '''

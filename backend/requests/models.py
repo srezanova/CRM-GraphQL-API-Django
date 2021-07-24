@@ -12,18 +12,16 @@ class Customer(models.Model):
 class Request(models.Model):
     created_at = models.DateField(auto_now_add=True)
     employee = models.ForeignKey(
-        User, related_name='employee', blank=True, null=True, on_delete=models.SET_NULL)
+        User, related_name='requests', blank=True, null=True, on_delete=models.SET_NULL)
 
     CONSULTING = 'CONSULTING'
     DIAGNOSIS = 'DIAGNOSIS'
     REPAIR = 'REPAIR'
-    REPLACEMENT = 'REPLACEMENT'
     RETURN = 'RETURN'
     CATEGORY_CHOICES = [
         (CONSULTING, 'CONSULTING'),
         (DIAGNOSIS, 'DIAGNOSIS'),
         (REPAIR, 'REPAIR'),
-        (REPLACEMENT, 'REPLACEMENT'),
         (RETURN, 'RETURN'),
     ]
 
@@ -44,4 +42,4 @@ class Request(models.Model):
         blank=True, choices=STATUS_CHOICES, max_length=15, null=True)
     description = models.TextField(blank=True, null=True)
     customer = models.ForeignKey(
-        Customer, related_name='customer', blank=True, null=True, on_delete=models.SET_NULL)
+        Customer, related_name='requests', blank=True, null=True, on_delete=models.SET_NULL)
