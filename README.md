@@ -7,6 +7,11 @@
 - [GraphQL API](https://domclick.srezanova.me/graphql/)
 - [Задеплоенное приложение](https://domclick.srezanova.me/)
 
+### Используемые технологии:
+
+- [Веб-фреймворк Django](https://www.djangoproject.com/)
+- [СУБД PostgreSQL](https://www.postgresql.org/)
+
 **Работа сайта (частичный функционал для отображения возможностей сервиса):**
 
 На [домашней странице](https://domclick.srezanova.me/) отображены все заявки с фильтрами.
@@ -21,15 +26,9 @@
 
 ![edit](img/edit.png)
 
-## GraphQL API
-
-Реализован с помощью Django и библиотеки [graphene-django](https://docs.graphene-python.org/projects/django/en/latest/).
-
 ### Аутентификация
 
-Аутентификация реализована с помощью JWT токена и библиотеки [django-graphql-jwt](https://github.com/flavors/django-graphql-jwt).
-
-Мутация `register` используется для регистрации сотрудников, почта и пароль – обязательные поля:
+Аутентификация реализована с помощью JWT токена. Мутация `register` используется для регистрации сотрудников, почта и пароль – обязательные поля:
 
 ![register](img/register.png)
 
@@ -94,7 +93,7 @@
 
 Кверя `allTasks` возвращает все заявки.
 
-**Фильтры**
+#### Фильтры
 
 - по клиентам(по номеру телефона)
 - по статусам (одному или нескольким)
