@@ -4,6 +4,7 @@ from graphql import GraphQLError
 from .models import Task, Customer
 from .schema import TaskType, CustomerType, StatusEnum, CategoryEnum
 from users.models import User
+from .telegram_bot import send_update_to_bot
 
 
 class TaskInput(graphene.InputObjectType):
@@ -24,6 +25,7 @@ class CustomerInput(graphene.InputObjectType):
     Defines fields allowing user to create or update the data.
     '''
     id = graphene.ID()
+    telegram_id = graphene.ID()
     phone = graphene.String(required=True)
     name = graphene.String()
 
@@ -84,6 +86,12 @@ class UpdateTask(graphene.Mutation):
 
         task_instance.save()
 
+        if task_data.status is not None:
+            bot_chatID = str(task_instance.customer.telegram_id)
+            if bot_chatID is not None:
+                bot_message = f'Your request No.{task_instance.id} changed status: {task_instance.status}'
+                send_update_to_bot(bot_chatID, bot_message)
+
         return UpdateTask(task=task_instance)
 
 
@@ -124,6 +132,7 @@ class CreateCustomer(graphene.Mutation):
         customer = Customer(
             phone=customer_data.phone,
             name=customer_data.name,
+            telegram_id=customer_data.telegram_id,
         )
 
         customer.save()
@@ -147,6 +156,8 @@ class UpdateCustomer(graphene.Mutation):
         customer = Customer.objects.get(phone=customer_data.phone)
         if customer_data.name is not None:
             customer.name = customer_data.name
+        if customer_data.telegram_id is not None:
+            customer.telegram_id = customer_data.telegram_id
 
         customer.save()
         return UpdateCustomer(customer=customer)

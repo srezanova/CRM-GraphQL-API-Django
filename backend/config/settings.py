@@ -162,4 +162,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-TOKEN = env('TELEGRAM_TOKEN')
+TELEGRAM_TOKEN = env('TELEGRAM_TOKEN')
+
+CHAT_ID = env('CHAT_ID')

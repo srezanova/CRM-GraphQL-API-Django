@@ -1,17 +1,17 @@
-import requests as pythonRequests
+import requests
+import environ
 
 
-def send_update_to_bot(bot_message):
+env = environ.Env()
+environ.Env.read_env()
 
-    bot_token = ''
-    bot_chatID = ''
+
+def send_update_to_bot(bot_chatID, bot_message):
+
+    bot_token = env('TELEGRAM_TOKEN')
     send_text = 'https://api.telegram.org/bot' + bot_token + \
         '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
 
-    response = pythonRequests.get(send_text)
+    response = requests.get(send_text)
 
     return response.json()
-
-
-test = send_update_to_bot("Testing Telegram bot")
-print(test)

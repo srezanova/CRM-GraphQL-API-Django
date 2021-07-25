@@ -25,7 +25,7 @@ def log_errors(f):
 def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
     text = '''
-    Welcome! Here you will get updates on your tasks.
+    Welcome! Here you will get updates on your request.
 If you are not registered please enter your phone.'''
     update.message.reply_text(
         text=text,
@@ -62,38 +62,20 @@ def get_tasks(update: Update, context: CallbackContext):
         reply_text = f"No requests yet."
         update.message.reply_text(text=reply_text)
 
-    # check every 10 seconds if status changed
-    while True:
-
-        time.sleep(10)
-
-        updated_queryset = Task.objects.filter(customer=customer).values()
-        update_results = [(task['id'], task['status'])
-                          for task in updated_queryset]
-
-        if results != update_results:
-            results = update_results
-            new_results = get_results()
-
-            new_text = f"Your requests changed status:\n{new_results}"
-            update.message.reply_text(text=new_text)
-
 
 class Command(BaseCommand):
     help = 'Telegram-bot'
 
     def handle(self, *args, **kwargs):
         # connection
-        task = TelegramTask(
+        request = TelegramRequest(
             connect_timeout=1.0,
             read_timeout=2.0,
         )
         bot = Bot(
-            task=task,
-            token=settings.TOKEN,
+            request=request,
+            token=settings.TELEGRAM_TOKEN,
         )
-
-        print(bot.get_me())
 
         # handlers
         updater = Updater(
