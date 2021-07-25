@@ -1,7 +1,7 @@
 export type Category = 'CONSULTING' | 'DIAGNOSIS' | 'REPAIR' | 'OTHER';
 export type Status = 'ACCEPTED' | 'IN_PROGRESS' | 'READY' | 'CLOSED';
 
-export interface Request {
+export interface Task {
   id: string;
   createdAt: string;
   employee: { id: string; email: string };

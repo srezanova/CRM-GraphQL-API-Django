@@ -4,7 +4,7 @@ from graphql import GraphQLError
 from graphene.test import Client
 
 from users.models import User
-from requests.models import Request, Customer
+from tasks.models import Task, Customer
 from config.schema import schema
 
 
@@ -15,8 +15,8 @@ def execute_query(query, user=None, variable_values=None, **kwargs):
     """
     Returns the results of executing a graphQL query using the graphene test client.
     """
-    request_factory = RequestFactory()
-    context_value = request_factory.get('/graphql/')
+    task_factory = RequestFactory()
+    context_value = task_factory.get('/graphql/')
     context_value.user = user
     client = Client(schema)
     executed = client.execute(
@@ -50,7 +50,7 @@ class QueryTest(TestCase):
             name='Frank',
         )
 
-        self.request = Request.objects.create(
+        self.task = Task.objects.create(
             id=300,
             employee=self.user,
             category='DIAGNOSIS',
@@ -59,7 +59,7 @@ class QueryTest(TestCase):
             customer=self.customer,
         )
 
-        self.request1 = Request.objects.create(
+        self.task1 = Task.objects.create(
             id=302,
             employee=self.user,
             category='DIAGNOSIS',
@@ -68,7 +68,7 @@ class QueryTest(TestCase):
             customer=self.customer,
         )
 
-        self.request2 = Request.objects.create(
+        self.task2 = Task.objects.create(
             id=301,
             employee=self.user2,
             category='CONSULTING',
@@ -81,9 +81,9 @@ class QueryTest(TestCase):
         self.user.delete()
         self.customer.delete()
         self.customer2.delete()
-        self.request.delete()
-        self.request1.delete()
-        self.request2.delete()
+        self.task.delete()
+        self.task1.delete()
+        self.task2.delete()
 
     def test_me_query(self):
         query = '''
@@ -145,10 +145,10 @@ class QueryTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_all_requests_query(self):
+    def test_all_tasks_query(self):
         query = '''
             query {
-                allRequests {
+                allTasks {
                     id
                     description
                     category
@@ -157,7 +157,7 @@ class QueryTest(TestCase):
             }
                 '''
 
-        expected = {'allRequests': [
+        expected = {'allTasks': [
             {'category': 'DIAGNOSIS', 'description': 'Broken phone.',
              'id': '300', 'status': 'ACCEPTED'},
             {'category': 'DIAGNOSIS', 'description': 'Broken phone.',
@@ -169,10 +169,10 @@ class QueryTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_all_requests_query_filter_by_phone(self):
+    def test_all_tasks_query_filter_by_phone(self):
         query = '''
             query {
-                allRequests (customerPhone:"+7(801)-000-00-00") {
+                allTasks (customerPhone:"+7(801)-000-00-00") {
                     customer {
                         phone
                     }
@@ -182,7 +182,7 @@ class QueryTest(TestCase):
             }
                 '''
 
-        expected = {'allRequests': [{'customer': {
+        expected = {'allTasks': [{'customer': {
             'phone': '+7(801)-000-00-00'},
             'status': 'CLOSED', 'category': 'CONSULTING'}]}
 
@@ -190,10 +190,10 @@ class QueryTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_all_requests_query_filter_by_statuses1(self):
+    def test_all_tasks_query_filter_by_statuses1(self):
         query = '''
             query {
-                allRequests (statuses:[ACCEPTED]) {
+                allTasks (statuses:[ACCEPTED]) {
                     customer {
                         phone
                     }
@@ -203,7 +203,7 @@ class QueryTest(TestCase):
             }
                 '''
 
-        expected = {'allRequests': [{'customer': {
+        expected = {'allTasks': [{'customer': {
             'phone': '+7(800)-000-00-00'},
             'status': 'ACCEPTED', 'category': 'DIAGNOSIS'}]}
 
@@ -211,17 +211,17 @@ class QueryTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_all_requests_query_filter_by_statuses2(self):
+    def test_all_tasks_query_filter_by_statuses2(self):
         query = '''
             query {
-                allRequests (statuses:[ACCEPTED, CLOSED]) {
+                allTasks (statuses:[ACCEPTED, CLOSED]) {
                     status
                     category
                 }
             }
                 '''
 
-        expected = {'allRequests': [
+        expected = {'allTasks': [
             {'status': 'ACCEPTED', 'category': 'DIAGNOSIS'},
             {'status': 'CLOSED', 'category': 'DIAGNOSIS'},
             {'status': 'CLOSED', 'category': 'CONSULTING'}]}
@@ -230,10 +230,10 @@ class QueryTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_all_requests_query_filter_by_category(self):
+    def test_all_tasks_query_filter_by_category(self):
         query = '''
             query {
-                allRequests (category:DIAGNOSIS) {
+                allTasks (category:DIAGNOSIS) {
                     customer {
                         phone
                     }
@@ -243,7 +243,7 @@ class QueryTest(TestCase):
             }
                 '''
 
-        expected = {'allRequests': [
+        expected = {'allTasks': [
             {'customer': {'phone': '+7(800)-000-00-00'},
              'status': 'ACCEPTED', 'category': 'DIAGNOSIS'},
             {'customer': {'phone': '+7(800)-000-00-00'},
@@ -253,12 +253,12 @@ class QueryTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_all_requests_query_filter_by_date(self):
-        date = self.request2.created_at
+    def test_all_tasks_query_filter_by_date(self):
+        date = self.task2.created_at
 
-        query = f'query {{ allRequests (createdAt:"{date}") {{ id status category }} }}'
+        query = f'query {{ allTasks (createdAt:"{date}") {{ id status category }} }}'
 
-        expected = {'allRequests': [
+        expected = {'allTasks': [
             {'category': 'DIAGNOSIS', 'id': '300', 'status': 'ACCEPTED'},
             {'category': 'DIAGNOSIS', 'id': '302', 'status': 'CLOSED'},
             {'category': 'CONSULTING', 'id': '301', 'status': 'CLOSED'}]}
@@ -267,12 +267,12 @@ class QueryTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_all_requests_query_filter_by_date_range(self):
-        date = self.request2.created_at
+    def test_all_tasks_query_filter_by_date_range(self):
+        date = self.task2.created_at
 
-        query = f'query {{ allRequests (dateStart:"{date}", dateEnd:"{date}") {{ id status category }} }}'
+        query = f'query {{ allTasks (dateStart:"{date}", dateEnd:"{date}") {{ id status category }} }}'
 
-        expected = {'allRequests': [
+        expected = {'allTasks': [
             {'category': 'DIAGNOSIS', 'id': '300', 'status': 'ACCEPTED'},
             {'category': 'DIAGNOSIS', 'id': '302', 'status': 'CLOSED'},
             {'category': 'CONSULTING', 'id': '301', 'status': 'CLOSED'}]}
@@ -281,10 +281,10 @@ class QueryTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_all_requests_query_many_filters(self):
+    def test_all_tasks_query_many_filters(self):
         query = '''
             query {
-                allRequests (category:DIAGNOSIS, statuses:[CLOSED]) {
+                allTasks (category:DIAGNOSIS, statuses:[CLOSED]) {
                     customer {
                         phone
                     }
@@ -294,7 +294,7 @@ class QueryTest(TestCase):
             }
                 '''
 
-        expected = {'allRequests': [
+        expected = {'allTasks': [
             {'customer': {'phone': '+7(800)-000-00-00'},
              'status': 'CLOSED', 'category': 'DIAGNOSIS'}]}
 
@@ -302,10 +302,10 @@ class QueryTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_request_by_id_query(self):
+    def test_task_by_id_query(self):
         query = '''
             query {
-                requestById(id:300) {
+                taskById(id:300) {
                     id
                     status
                     customer {
@@ -318,24 +318,24 @@ class QueryTest(TestCase):
             }
                 '''
 
-        expected = {'requestById': {'id': '300', 'status': 'ACCEPTED',
-                                    'customer': {'id': '200'},
-                                    'employee': {'id': '100'}}}
+        expected = {'taskById': {'id': '300', 'status': 'ACCEPTED',
+                                 'customer': {'id': '200'},
+                                 'employee': {'id': '100'}}}
 
         executed = execute_query(query, self.user)
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_all_requests_query_not_found(self):
+    def test_all_tasks_query_not_found(self):
         query = '''
             query {
-                allRequests(customerPhone:"0") {
+                allTasks(customerPhone:"0") {
                     id
                 }
             }
                 '''
 
-        expected = {'allRequests': []}
+        expected = {'allTasks': []}
 
         executed = execute_query(query, self.user)
         data = executed.get('data')

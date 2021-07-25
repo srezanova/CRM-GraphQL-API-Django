@@ -34,9 +34,11 @@
 
 1. ID клиента
 
-2. Номер телефона
+2. Телеграм ID
 
-3. Имя
+3. Номер телефона
+
+4. Имя
 
 ### Получение данных о клиенте
 
@@ -102,7 +104,7 @@
 
 ### Получение данных о заявках
 
-Доступ ко всем заявкам компании осуществляется через **allRequests Query**
+Доступ ко всем заявкам компании осуществляется через **allTasks Query**
 
 #### Фильтры
 
@@ -116,39 +118,37 @@
 
 - по интервалу дат
 
-![allRequestsNoFilters](img/allRequestsNoFilters.png)
+![allTasksNoFilters](img/allTasksNoFilters.png)
 
-![allRequestsFilters](img/allRequestsFilters.png)
+![allTasksFiltersDate](img/allTasksFiltersDate.png)
 
-![allRequestsFiltersDate](img/allRequestsFiltersDate.png)
+Запрос заявки по ID через **taskById Query**.
 
-Запрос заявки по ID через **requestById Query**.
-
-![requestById](img/requestById.png)
+![taskById](img/taskById.png)
 
 ### Создание заявок
 
-Пользователь создает заявки с помощью **createRequest Mutation**.
+Пользователь создает заявки с помощью **createTask Mutation**.
 
 Клиент заполняется по полю номер телефона. Если такого клиента не существует в базе - создается новая карточка.
 
 Данные пользователя как ответственного сотрудника по заявке автоматически заполняются по данным входа.
 
-![createRequest](img/createRequest.png)
+![createTask](img/createTask.png)
 
 ### Изменение заявок
 
-Изменить заявку можно по ее ID с помощью **updateRequest Mutation**.
+Изменить заявку можно по ее ID с помощью **updateTask Mutation**.
 
 Доступные поля для изменения: статус, тип заявки, описание.
 
-![updateRequest](img/updateRequest.png)
+![updateTask](img/updateTask.png)
 
 ### Удаление заявок
 
-Удалить заявку можно по ее ID с помощью **deleteRequest Mutation**.
+Удалить заявку можно по ее ID с помощью **deleteTask Mutation**.
 
-![deleteRequest](img/deleteRequest.png)
+![deleteTask](img/deleteTask.png)
 
 ## Работа сайта (частичный функционал для отображения возможностей сервиса)
 
@@ -158,7 +158,7 @@
 
 Можем создать заявку:
 
-![new-request](img/new-request.png)
+![new-task](img/new-task.png)
 
 Отредактировать и удалить ее:
 

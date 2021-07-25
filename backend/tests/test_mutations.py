@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from graphql_jwt.testcases import JSONWebTokenTestCase
 
 from users.models import User
-from requests.models import Request, Customer
+from tasks.models import Task, Customer
 from config.schema import schema
 
 
@@ -18,8 +18,8 @@ def execute_query(query, user=None, variable_values=None, **kwargs):
     """
     Returns the results of executing a graphQL query using the graphene test client.
     """
-    request_factory = RequestFactory()
-    context_value = request_factory.get('/graphql/')
+    task_factory = RequestFactory()
+    context_value = task_factory.get('/graphql/')
     context_value.user = user
     client = Client(schema)
     executed = client.execute(
@@ -51,7 +51,7 @@ class MutationTest(TestCase):
             phone='+7(801)-000-00-00',
         )
 
-        self.request = Request.objects.create(
+        self.task = Task.objects.create(
             id=300,
             employee=self.user,
             category='DIAGNOSIS',
@@ -60,7 +60,7 @@ class MutationTest(TestCase):
             customer=self.customer,
         )
 
-        self.request2 = Request.objects.create(
+        self.task2 = Task.objects.create(
             id=301,
             employee=self.user1,
             category='CONSULTING',
@@ -74,8 +74,8 @@ class MutationTest(TestCase):
         self.user1.delete()
         self.customer.delete()
         self.customer2.delete()
-        self.request.delete()
-        self.request2.delete()
+        self.task.delete()
+        self.task2.delete()
 
     def test_update_user_mutation(self):
         query = '''
@@ -141,17 +141,17 @@ class MutationTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_create_request_mutation(self):
+    def test_create_task_mutation(self):
         query = '''
             mutation {
-                createRequest (requestData:
+                createTask (taskData:
                     {status:READY,
                     description:"Broken phone.",
                     customerPhone:"+7(800)-000-00-00",
                     category:REPAIR,
                     },
                     ) {
-                        request{
+                        task{
                         customer {
                             phone
                         }
@@ -166,8 +166,8 @@ class MutationTest(TestCase):
                 }
                 '''
 
-        expected = OrderedDict([('createRequest',
-                                 {'request':
+        expected = OrderedDict([('createTask',
+                                 {'task':
                                   {'customer': {'phone': '+7(800)-000-00-00'},
                                    'employee': {'email': 'user@test.com'},
                                       'status': 'READY',
@@ -237,14 +237,14 @@ class MutationTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_update_request_mutation(self):
+    def test_update_task_mutation(self):
         query = '''
             mutation {
-                updateRequest(requestData:{
+                updateTask(taskData:{
                     id:300,
                     status:ACCEPTED
                 }) {
-                    request {
+                    task {
                         description
                         category
                         status
@@ -253,7 +253,7 @@ class MutationTest(TestCase):
             }
                 '''
 
-        expected = OrderedDict([('updateRequest', {'request': {
+        expected = OrderedDict([('updateTask', {'task': {
                                'description': 'Broken phone.',
                                'category': 'DIAGNOSIS',
                                'status': 'ACCEPTED'}})])
@@ -262,16 +262,16 @@ class MutationTest(TestCase):
         data = executed.get('data')
         self.assertEqual(data, expected)
 
-    def test_delete_request_mutation(self):
+    def test_delete_task_mutation(self):
         query = '''
                 mutation {
-                    deleteRequest(id:301) {
+                    deleteTask(id:301) {
                         id
                     }
                 }
                 '''
 
-        expected = OrderedDict([('deleteRequest', {'id': '301'})])
+        expected = OrderedDict([('deleteTask', {'id': '301'})])
 
         executed = execute_query(query, self.user)
         data = executed.get('data')

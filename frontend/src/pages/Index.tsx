@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 import dayjs from 'dayjs';
-import { RequestsList } from '../components/RequestsList/RequestsList';
-import type { RequestFiltersProps } from '../components/RequestsList/RequestFilters/RequestFilters';
+import { TasksList } from '../components/TasksList/TasksList';
+import type { TaskFiltersProps } from '../components/TasksList/TaskFilters/TaskFilters';
 
-export const requestsQuery = gql`
-  query requests($customerPhone: String, $category: CategoryEnum, $createdAt: String, $dateStart: String, $dateEnd: String) {
-    allRequests(customerPhone: $customerPhone, category: $category, createdAt: $createdAt, dateStart: $dateStart, dateEnd: $dateEnd) {
+export const tasksQuery = gql`
+  query tasks($customerPhone: String, $category: CategoryEnum, $createdAt: String, $dateStart: String, $dateEnd: String) {
+    allTasks(customerPhone: $customerPhone, category: $category, createdAt: $createdAt, dateStart: $dateStart, dateEnd: $dateEnd) {
       id
       createdAt
       category
@@ -26,7 +26,7 @@ export const requestsQuery = gql`
 `;
 
 export default function Index() {
-  const [filters, setFilters] = useState<RequestFiltersProps['values']>({
+  const [filters, setFilters] = useState<TaskFiltersProps['values']>({
     customerPhone: '',
     category: null,
     createdAt: null,
@@ -38,7 +38,7 @@ export default function Index() {
     [field]: value,
   }));
 
-  const { data, loading } = useQuery(requestsQuery, {
+  const { data, loading } = useQuery(tasksQuery, {
     variables: {
       customerPhone: filters.customerPhone.trim().length > 0 ? filters.customerPhone : undefined,
       category: filters.category || undefined,
@@ -50,8 +50,8 @@ export default function Index() {
 
   return (
     <div>
-      <RequestsList
-        data={loading ? [] : data.allRequests}
+      <TasksList
+        data={loading ? [] : data.allTasks}
         values={filters}
         onFilterChange={handleFilterChange}
       />

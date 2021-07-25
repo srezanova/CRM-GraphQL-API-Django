@@ -2,9 +2,9 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import { Provider } from './components/Provider/Provider';
 import Login from './pages/Login';
 import Index from './pages/Index';
-import Request from './pages/Request';
-import NewRequest from './pages/NewRequest';
-import EditRequest from './pages/EditRequest';
+import Task from './pages/Task';
+import NewTask from './pages/NewTask';
+import EditTask from './pages/EditTask';
 
 export function App() {
   return (
@@ -14,16 +14,16 @@ export function App() {
           <Index />
         </Route>
 
-        <Route path="/new-request" exact>
-          <NewRequest />
+        <Route path="/new-task" exact>
+          <NewTask />
         </Route>
 
-        <Route path="/requests/:id/" exact>
-          <Request />
+        <Route path="/tasks/:id/" exact>
+          <Task />
         </Route>
 
-        <Route path="/requests/:id/edit" exact>
-          <EditRequest />
+        <Route path="/tasks/:id/edit" exact>
+          <EditTask />
         </Route>
 
         <Route path="/login">
