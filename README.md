@@ -162,4 +162,4 @@
 
 Отредактировать и удалить ее:
 
-![edit](img/new-edit.png)
+![edit](img/edit.png)
