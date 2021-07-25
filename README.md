@@ -158,7 +158,7 @@
 
 Можем создать заявку:
 
-![new-task](img/new-task.png)
+![new-task](img/new-task.png =100x20)
 
 Отредактировать и удалить ее:
 
