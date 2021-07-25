@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'rest_framework',
-
 ]
 
 MIDDLEWARE = [
@@ -162,3 +161,5 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+TOKEN = env('TELEGRAM_TOKEN')

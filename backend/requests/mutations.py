@@ -1,5 +1,6 @@
 import graphene
 from graphql import GraphQLError
+import requests
 
 from .models import Request, Customer
 from .schema import RequestType, CustomerType, StatusEnum, CategoryEnum
