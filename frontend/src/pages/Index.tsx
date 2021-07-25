@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useQuery, gql } from '@apollo/client';
 import dayjs from 'dayjs';
 import { TasksList } from '../components/TasksList/TasksList';
@@ -26,6 +27,7 @@ export const tasksQuery = gql`
 `;
 
 export default function Index() {
+  const history = useHistory();
   const [filters, setFilters] = useState<TaskFiltersProps['values']>({
     customerPhone: '',
     category: null,
@@ -38,7 +40,7 @@ export default function Index() {
     [field]: value,
   }));
 
-  const { data, loading } = useQuery(tasksQuery, {
+  const { data, loading, error } = useQuery(tasksQuery, {
     variables: {
       customerPhone: filters.customerPhone.trim().length > 0 ? filters.customerPhone : undefined,
       category: filters.category || undefined,
@@ -47,6 +49,11 @@ export default function Index() {
       dateEnd: filters.range[1] ? dayjs(filters.range[1]).format('YYYY-MM-DD') : undefined,
     },
   });
+
+  if (error) {
+    history.push('/login');
+    return null;
+  }
 
   return (
     <div>

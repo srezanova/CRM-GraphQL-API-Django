@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useMutation, gql } from '@apollo/client';
 import { LoginForm, LoginValues } from '../components/LoginForm/LoginForm';
 
@@ -12,6 +13,7 @@ const mutation = gql`
 `;
 
 export default function Login() {
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [mutate] = useMutation(mutation);
@@ -25,6 +27,7 @@ export default function Login() {
       } else {
         setError(false);
         window.localStorage.setItem('auth', token);
+        history.push('/');
       }
 
       setLoading(false);

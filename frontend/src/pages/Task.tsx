@@ -1,6 +1,6 @@
 import { useQuery, gql } from '@apollo/client';
 import { LoadingOverlay } from '@mantine/core';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { Task } from '../components/Task/Task';
 
 export const taskQuery = gql`
@@ -25,8 +25,15 @@ export const taskQuery = gql`
 `;
 
 export default function TaskPage() {
+  const history = useHistory();
   const params = useParams<{ id: string }>();
-  const { data, loading } = useQuery(taskQuery, { variables: { id: params.id } });
+  const { data, loading, error } = useQuery(taskQuery, { variables: { id: params.id } });
+
+  if (error) {
+    history.push('/login');
+    return null;
+  }
+
   return (
     <div>
       {loading ? <LoadingOverlay visible /> : <Task data={data.taskById} />}

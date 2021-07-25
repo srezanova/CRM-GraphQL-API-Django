@@ -17,7 +17,7 @@ const updateTask = gql`
 export default function EditTask() {
   const params = useParams<{ id: string }>();
   const history = useHistory();
-  const { data, loading } = useQuery(taskQuery, { variables: { id: params.id } });
+  const { data, loading, error } = useQuery(taskQuery, { variables: { id: params.id } });
 
   const [mutate] = useMutation(updateTask);
   const handleSubmit = (values: TaskFormValues) => {
@@ -34,6 +34,11 @@ export default function EditTask() {
 
   if (loading) {
     return <LoadingOverlay visible />;
+  }
+
+  if (error) {
+    history.push('/login');
+    return null;
   }
 
   return <TaskForm title="Редактировать заявку" onSubmit={handleSubmit} initialValues={{ ...data.taskById, customerPhone: data.taskById.customer.phone }} />;
